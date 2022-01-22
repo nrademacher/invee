@@ -6,24 +6,50 @@
 
 import { PrismaClient } from '@prisma/client'
 import { hashPassword } from '../src/utils/auth'
+import faker from '@faker-js/faker'
+import { nanoid } from 'nanoid'
 
 const prisma = new PrismaClient()
-
 async function main() {
     const passwordHash = await hashPassword('hello-world-password')
-    const { id } = await prisma.user.create({
+    const { id: userId } = await prisma.user.create({
         data: {
             email: 'hello@world.com',
-            name: 'hello-world-user',
+            name: faker.name.findName(),
+            streetAddress: faker.address.streetAddress(),
+            city: faker.address.city(),
+            postCode: faker.address.zipCode(),
+            country: faker.address.country(),
             passwordHash,
         },
     })
 
-    await prisma.post.create({
+    const { id: clientId } = await prisma.client.create({
         data: {
-            title: 'First Post',
-            text: 'This is an example post generated from `prisma/seed.ts`',
-            userId: id,
+            email: 'hello@world.com',
+            name: faker.name.findName(),
+            streetAddress: faker.address.streetAddress(),
+            city: faker.address.city(),
+            postCode: faker.address.zipCode(),
+            country: faker.address.country(),
+        },
+    })
+
+    await prisma.invoice.create({
+        data: {
+            status: 'PENDING',
+            publicId: nanoid(),
+            projectName: 'hello world invoice',
+            paymentTerms: 'NET_30',
+            clientId,
+            userId,
+            items: {
+                create: {
+                    name: 'Hello world item',
+                    price: 99,
+                    quantity: 3,
+                },
+            },
         },
     })
 }

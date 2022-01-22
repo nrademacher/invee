@@ -65,7 +65,7 @@ enum PaymentTerms {
 
 model Invoice {
   id                 String        @id @default(cuid())
-  publicId           String        @unique
+  publicId           String
   createdAt          DateTime      @unique @default(now())
   updatedAt          DateTime      @unique @default(now())
   status             InvoiceStatus
@@ -73,8 +73,7 @@ model Invoice {
   projectDescription String?
   paymentTerms       PaymentTerms
   payments           Payment[]
-  items              Item[]        @relation(name: "ItemToInvoice")
-  total              Int
+  items              Item[]
   client             Client        @relation(name: "InvoiceToClient", fields: [clientId], references: [id])
   clientId           String
   user               User          @relation(name: "InvoiceToUser", fields: [userId], references: [id])
@@ -106,13 +105,14 @@ model Payment {
 }
 
 model Item {
-  id String @id @default(cuid())
+  id        String   @id @default(cuid())
   createdAt DateTime @unique @default(now())
   updatedAt DateTime @unique @default(now())
-  name     String
-  quantity Int
-  price    Int
-  invoices Invoice[] @relation(name: "ItemToInvoice")
+  name      String
+  quantity  Int
+  price     Int
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId String
 
   @@map("items")
 }
