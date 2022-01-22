@@ -22,7 +22,6 @@ model User {
   postCode      String
   country       String
   invoices      Invoice[] @relation(name: "InvoiceToUser")
-  clients       Client[]  @relation(name: "ClientToUser")
 
   @@map("users")
 }
@@ -37,7 +36,6 @@ model Client {
   city          String
   postCode      String
   country       String
-  users         User[]    @relation(name: "ClientToUser")
   invoices      Invoice[] @relation(name: "InvoiceToClient")
   payments      Payment[] @relation(name: "PaymentToClient")
 
@@ -102,6 +100,8 @@ model Payment {
   refunded   Boolean
   data       Json
   externalId String      @unique
+
+  @@map("payments")
 }
 
 model Item {
