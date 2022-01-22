@@ -34,6 +34,7 @@
     "@trpc/react": "^9.17.0",
     "@trpc/server": "^9.17.0",
     "bcrypt": "^5.0.1",
+    "nanoid": "^3.2.0",
     "next": "^12.0.1",
     "next-auth": "^4.1.0",
     "react": "^17.0.2",
@@ -45,6 +46,7 @@
     "zod": "^3.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.3",
     "@tailwindcss/forms": "^0.4.0",
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^27.0.1",
