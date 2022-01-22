@@ -11,33 +11,108 @@ generator client {
 }
 
 model User {
-  id String @id @default(cuid())
-
-  createdAt DateTime @unique @default(now())
-  updatedAt DateTime @unique @default(now())
-
-  name         String  @unique
-  email        String  @unique
-  passwordHash String
-
-  posts Post[] @relation(name: "PostToUser")
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @unique @default(now())
+  updatedAt     DateTime  @unique @default(now())
+  name          String    @unique
+  email         String    @unique
+  passwordHash  String
+  streetAddress String
+  city          String
+  postCode      String
+  country       String
+  invoices      Invoice[] @relation(name: "InvoiceToUser")
+  clients       Client[]  @relation(name: "ClientToUser")
 
   @@map("users")
 }
 
-model Post {
-  id String @id @default(uuid())
+model Client {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @unique @default(now())
+  updatedAt     DateTime  @unique @default(now())
+  name          String    @unique
+  email         String    @unique
+  streetAddress String
+  city          String
+  postCode      String
+  country       String
+  users         User[]    @relation(name: "ClientToUser")
+  invoices      Invoice[] @relation(name: "InvoiceToClient")
+  payments      Payment[] @relation(name: "PaymentToClient")
 
-  // To return `Date`s intact through the API we need to add data transformers
-  // https://trpc.io/docs/data-transformers
+  @@map("clients")
+}
+
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  PAID
+}
+
+enum PaymentTerms {
+  PIA
+  CIA
+  UPON_RECEIPT
+  NET_7
+  NET_21
+  NET_30
+  EOM
+  FIFTEEN_MFI
+  TWO_TEN_NET_30
+  FIFTY_PERCENT_UPFRONT
+}
+
+model Invoice {
+  id                 String        @id @default(cuid())
+  publicId           String        @unique
+  createdAt          DateTime      @unique @default(now())
+  updatedAt          DateTime      @unique @default(now())
+  status             InvoiceStatus
+  projectName        String
+  projectDescription String?
+  paymentTerms       PaymentTerms
+  payments           Payment[]
+  items              Item[]        @relation(name: "ItemToInvoice")
+  total              Int
+  client             Client        @relation(name: "InvoiceToClient", fields: [clientId], references: [id])
+  clientId           String
+  user               User          @relation(name: "InvoiceToUser", fields: [userId], references: [id])
+  userId             String
+
+  @@map("invoices")
+}
+
+enum PaymentType {
+  STRIPE
+  PAYPAL
+}
+
+model Payment {
+  id         String      @id @default(cuid())
+  publicId   String
+  type       PaymentType
+  invoice    Invoice     @relation(fields: [invoiceId], references: [id])
+  invoiceId  String
+  client     Client      @relation(name: "PaymentToClient", fields: [clientId], references: [id])
+  clientId   String
+  amount     Int
+  fee        Int
+  currency   String
+  success    Boolean
+  refunded   Boolean
+  data       Json
+  externalId String      @unique
+}
+
+model Item {
+  id String @id @default(cuid())
   createdAt DateTime @unique @default(now())
   updatedAt DateTime @unique @default(now())
+  name     String
+  quantity Int
+  price    Int
+  invoices Invoice[] @relation(name: "ItemToInvoice")
 
-  title String
-  text  String
-
-  user   User   @relation(name: "PostToUser", fields: [userId], references: [id])
-  userId String
-
-  @@map("posts")
+  @@map("items")
 }
