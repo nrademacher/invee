@@ -11,35 +11,21 @@ generator client {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  createdAt     DateTime  @unique @default(now())
-  updatedAt     DateTime  @unique @default(now())
-  name          String    @unique
-  email         String    @unique
-  passwordHash  String
-  streetAddress String
-  city          String
-  postCode      String
-  country       String
-  invoices      Invoice[] @relation(name: "InvoiceToUser")
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @unique @default(now())
+  updatedAt        DateTime  @unique @default(now())
+  name             String    @unique
+  email            String    @unique
+  passwordHash     String
+  streetAddress    String
+  city             String
+  postCode         String
+  country          String
+  invoicesSent     Invoice[] @relation(name: "InvoiceToSender")
+  invoicesReceived Invoice[] @relation(name: "InvoiceToPayee")
+  payments         Payment[] @relation(name: "PaymentToUser")
 
   @@map("users")
-}
-
-model Client {
-  id            String    @id @default(cuid())
-  createdAt     DateTime  @unique @default(now())
-  updatedAt     DateTime  @unique @default(now())
-  name          String    @unique
-  email         String    @unique
-  streetAddress String
-  city          String
-  postCode      String
-  country       String
-  invoices      Invoice[] @relation(name: "InvoiceToClient")
-  payments      Payment[] @relation(name: "PaymentToClient")
-
-  @@map("clients")
 }
 
 enum InvoiceStatus {
@@ -72,10 +58,10 @@ model Invoice {
   paymentTerms       PaymentTerms
   payments           Payment[]
   items              Item[]
-  client             Client        @relation(name: "InvoiceToClient", fields: [clientId], references: [id])
-  clientId           String
-  user               User          @relation(name: "InvoiceToUser", fields: [userId], references: [id])
-  userId             String
+  payee              User          @relation(name: "InvoiceToPayee", fields: [payeeId], references: [id])
+  payeeId            String
+  sender             User          @relation(name: "InvoiceToSender", fields: [senderId], references: [id])
+  senderId           String
 
   @@map("invoices")
 }
@@ -91,8 +77,8 @@ model Payment {
   type       PaymentType
   invoice    Invoice     @relation(fields: [invoiceId], references: [id])
   invoiceId  String
-  client     Client      @relation(name: "PaymentToClient", fields: [clientId], references: [id])
-  clientId   String
+  user       User        @relation(name: "PaymentToUser", fields: [userId], references: [id])
+  userId     String
   amount     Int
   fee        Int
   currency   String
