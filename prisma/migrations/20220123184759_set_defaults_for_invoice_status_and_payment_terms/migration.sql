@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "invoices" ALTER COLUMN "status" SET DEFAULT E'DRAFT',
+ALTER COLUMN "paymentTerms" SET DEFAULT E'NET_30';
