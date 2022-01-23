@@ -11,10 +11,10 @@ import { nanoid } from 'nanoid'
 
 const prisma = new PrismaClient()
 async function main() {
-    const passwordHash = await hashPassword('hello-world-password')
-    const { id: userId } = await prisma.user.create({
+    let passwordHash = await hashPassword(faker.internet.password())
+    const { id: senderId } = await prisma.user.create({
         data: {
-            email: 'hello@world.com',
+            email: faker.internet.email(),
             name: faker.name.findName(),
             streetAddress: faker.address.streetAddress(),
             city: faker.address.city(),
@@ -24,14 +24,16 @@ async function main() {
         },
     })
 
-    const { id: clientId } = await prisma.client.create({
+    passwordHash = await hashPassword(faker.internet.password())
+    const { id: payeeId } = await prisma.user.create({
         data: {
-            email: 'hello@world.com',
+            email: faker.internet.email(),
             name: faker.name.findName(),
             streetAddress: faker.address.streetAddress(),
             city: faker.address.city(),
             postCode: faker.address.zipCode(),
             country: faker.address.country(),
+            passwordHash
         },
     })
 
@@ -41,8 +43,8 @@ async function main() {
             publicId: nanoid(),
             projectName: 'hello world invoice',
             paymentTerms: 'NET_30',
-            clientId,
-            userId,
+            senderId,
+            payeeId,
             items: {
                 create: {
                     name: 'Hello world item',
