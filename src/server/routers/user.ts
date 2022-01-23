@@ -6,20 +6,38 @@
 import { createRouter } from '@/server/create-router'
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { ErrorCode, hashPassword } from '@/utils/auth'
+import { ErrorCode, hashPassword, verifyPassword } from '@/utils/auth'
+import isStrongPassword from 'validator/lib/isStrongPassword'
+import { createProtectedRouter } from '..'
 
-export const userRouter = createRouter()
-    // create
+export const publicUserRouter = createRouter()
+    .query('session', {
+        resolve({ ctx }) {
+            return ctx.session
+        },
+    })
     .mutation('create', {
         input: z.object({
             email: z.string().email(),
-            password: z.string().min(8),
-            name: z.string().min(3).max(32),
+            password: z
+                .string()
+                .min(8)
+                .refine(val => isStrongPassword(val), {
+                    message:
+                        'Password must contain at least one of the following characters: lower-case, upper-case, number, symbol',
+                }),
+            name: z.string().min(3).max(64),
+            streedAddress: z.string().min(1).optional(),
+            city: z.string().min(1).optional(),
+            postCode: z.string().min(1).optional(),
+            country: z.string().min(1).optional(),
         }),
         async resolve({ ctx, input }) {
             const { email, password, name } = input
+
             const exisitingUser = await ctx.prisma.user.findUnique({ where: { email } })
             if (exisitingUser) throw new Error('user_already_exists')
+
             const passwordHash = await hashPassword(password)
 
             return await ctx.prisma.user.create({
@@ -31,7 +49,8 @@ export const userRouter = createRouter()
             })
         },
     })
-    // read
+
+export const authenticatedUserRouter = createProtectedRouter()
     .query('current', {
         async resolve({ ctx }) {
             /**
@@ -43,11 +62,10 @@ export const userRouter = createRouter()
                 throw new TRPCError({ message: ErrorCode.UserNotFound, code: 'NOT_FOUND' })
             }
 
-            return ctx.prisma.user.findFirst({
-                where: {
-                    id: ctx.user.id,
-                },
-            })
+            const { id, email, name, createdAt } = ctx.user
+            const currentUser = { id, email, name, createdAt }
+
+            return currentUser
         },
     })
     .query('all', {
@@ -60,6 +78,9 @@ export const userRouter = createRouter()
             return ctx.prisma.user.findMany({
                 select: {
                     id: true,
+                    email: true,
+                    name: true,
+                    createdAt: true,
                 },
             })
         },
@@ -73,7 +94,10 @@ export const userRouter = createRouter()
             const user = await ctx.prisma.user.findUnique({
                 where: { id },
                 select: {
+                    id: true,
+                    email: true,
                     name: true,
+                    createdAt: true,
                 },
             })
             if (!user) {
@@ -88,26 +112,43 @@ export const userRouter = createRouter()
     // update
     .mutation('edit', {
         input: z.object({
-            id: z.string().uuid(),
+            password: z.string(),
             data: z.object({
-                name: z.string().min(3).max(32).optional(),
                 email: z.string().email().optional(),
+                password: z
+                    .string()
+                    .min(8)
+                    .refine(val => isStrongPassword(val)),
+                name: z.string().min(3).max(64),
+                streedAddress: z.string().min(1).optional(),
+                city: z.string().min(1).optional(),
+                postCode: z.string().min(1).optional(),
+                country: z.string().min(1).optional(),
             }),
         }),
         async resolve({ ctx, input }) {
-            const { id, data } = input
+            const { password, data } = input
+
+            if (!verifyPassword(password, ctx.user.passwordHash)) {
+                throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Incorrect password' })
+            }
+
             const user = await ctx.prisma.user.update({
-                where: { id },
+                where: { id: ctx.user.id },
                 data,
             })
             return user
         },
     })
-    // delete
     .mutation('delete', {
-        input: z.string().uuid(),
-        async resolve({ input: id, ctx }) {
-            await ctx.prisma.user.delete({ where: { id } })
-            return id
+        async resolve({ ctx }) {
+            await ctx.prisma.user.delete({
+                where: {
+                    id: ctx.user.id,
+                },
+            })
+            return
         },
     })
+
+export const userRouter = createRouter().merge(publicUserRouter).merge(authenticatedUserRouter)

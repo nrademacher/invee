@@ -11,19 +11,23 @@ generator client {
 }
 
 model User {
-  id               String    @id @default(cuid())
-  createdAt        DateTime  @unique @default(now())
-  updatedAt        DateTime  @unique @default(now())
-  name             String    @unique
-  email            String    @unique
-  passwordHash     String
-  streetAddress    String
-  city             String
-  postCode         String
-  country          String
+  id        String   @id @default(cuid())
+  createdAt DateTime @unique @default(now())
+  updatedAt DateTime @unique @default(now())
+
+  name         String @unique
+  email        String @unique
+  passwordHash String
+
+  streetAddress String?
+  city          String?
+  postCode      String?
+  country       String?
+
   invoicesSent     Invoice[] @relation(name: "InvoiceToSender")
   invoicesReceived Invoice[] @relation(name: "InvoiceToPayee")
-  payments         Payment[] @relation(name: "PaymentToUser")
+
+  payments Payment[] @relation(name: "PaymentToUser")
 
   @@map("users")
 }
@@ -53,10 +57,10 @@ model Invoice {
   publicId           String
   createdAt          DateTime      @unique @default(now())
   updatedAt          DateTime      @unique @default(now())
-  status             InvoiceStatus
+  status             InvoiceStatus @default(DRAFT)
   projectName        String
   projectDescription String?
-  paymentTerms       PaymentTerms
+  paymentTerms       PaymentTerms  @default(NET_30)
   payments           Payment[]
   items              Item[]
   payee              User          @relation(name: "InvoiceToPayee", fields: [payeeId], references: [id])
