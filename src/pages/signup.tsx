@@ -1,13 +1,12 @@
-import { FieldValues, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { trpc } from '@/lib/trpc'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { createUserSchema } from '@/server/routers/user/input-schemata'
 
 export default function SignUp() {
-    const { register, handleSubmit } = useForm()
-    const [password, setPassword] = useState('')
-
     const { status } = useSession()
     const router = useRouter()
 
@@ -16,6 +15,13 @@ export default function SignUp() {
             router.push('/')
         }
     }, [status, router])
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ resolver: zodResolver(createUserSchema), mode: 'onSubmit' })
+    const [password, setPassword] = useState('')
 
     const utils = trpc.useContext()
     const createUser = trpc.useMutation(['user.create'], {
@@ -34,10 +40,10 @@ export default function SignUp() {
                 <h2 className="mb-6 text-3xl font-bold text-center">Sign Up</h2>
                 <form
                     className="flex flex-col space-y-8 border rounded p-4 w-[20rem]"
-                    onSubmit={handleSubmit(async (data: FieldValues) => {
+                    onSubmit={handleSubmit(async data => {
                         setPassword(data.password)
                         await createUser.mutateAsync({
-                            name: data.username,
+                            name: data.name,
                             password: data.password,
                             email: data.email,
                         })
@@ -45,15 +51,16 @@ export default function SignUp() {
                 >
                     <div className="space-y-4">
                         <div className="flex flex-col">
-                            <label className="text-sm mb-1" htmlFor="username">
+                            <label className="text-sm mb-1" htmlFor="name">
                                 Username
                             </label>
                             <input
-                                id="username"
+                                id="name"
                                 type="text"
-                                {...register('username')}
+                                {...register('name')}
                                 className="border-gray-300 border rounded"
                             />
+                            {errors.name?.message && <p>{errors.name?.message}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-sm mb-1" htmlFor="email">
@@ -65,6 +72,7 @@ export default function SignUp() {
                                 {...register('email')}
                                 className="border-gray-300 border rounded"
                             />
+                            {errors.email?.message && <p>{errors.email?.message}</p>}
                         </div>
                         <div className="flex flex-col">
                             <label className="text-sm mb-1" htmlFor="password">
@@ -76,6 +84,7 @@ export default function SignUp() {
                                 {...register('password')}
                                 className="border-gray-300 border rounded"
                             />
+                            {errors.password?.message && <p>{errors.password?.message}</p>}
                         </div>
                     </div>
                     <button

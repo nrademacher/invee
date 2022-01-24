@@ -28,6 +28,7 @@
     "seed": "yarn ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.8.8",
     "@prisma/client": "^3.0.1",
     "@trpc/client": "^9.17.0",
     "@trpc/next": "^9.17.0",
