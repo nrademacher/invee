@@ -4,8 +4,7 @@ import NextAuth, { DefaultSession } from 'next-auth'
 declare module 'next-auth' {
     type DefaultSessionUser = NonNullable<DefaultSession['user']>
     type CustomSessionUser = DefaultSessionUser & {
-        id: number
-        username: string
+        id: string
     }
     /**
      * Returned by `useSession`, `getSession` and received as a prop on the `Provider` React Context

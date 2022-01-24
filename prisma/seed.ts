@@ -11,7 +11,7 @@ import { nanoid } from 'nanoid'
 
 const prisma = new PrismaClient()
 async function main() {
-    let passwordHash = await hashPassword(faker.internet.password())
+    let passwordHash = await hashPassword("hello-world-1")
     const { id: senderId } = await prisma.user.create({
         data: {
             email: faker.internet.email(),
@@ -24,7 +24,7 @@ async function main() {
         },
     })
 
-    passwordHash = await hashPassword(faker.internet.password())
+    passwordHash = await hashPassword("hello-world-2")
     const { id: payeeId } = await prisma.user.create({
         data: {
             email: faker.internet.email(),
