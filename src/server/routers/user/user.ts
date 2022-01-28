@@ -98,7 +98,7 @@ export const authenticatedUserRouter = createProtectedRouter()
     .mutation('edit', {
         input: z.object({
             password: z.string(),
-            data: createUserSchema
+            data: createUserSchema,
         }),
         async resolve({ ctx, input }) {
             const { password, data } = input

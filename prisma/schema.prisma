@@ -10,6 +10,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator zod {
+  provider      = "zod-prisma"
+  output        = "./zod"
+  // imports       = "./zod-utils"
+  relationModel = "default"
+}
+
 model User {
   id        String   @id @default(cuid())
   createdAt DateTime @unique @default(now())

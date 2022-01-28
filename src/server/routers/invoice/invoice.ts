@@ -28,7 +28,6 @@ export const invoiceRouter = createProtectedRouter()
             return invoice
         },
     })
-    // read
     .query('all', {
         async resolve({ ctx }) {
             /**
@@ -71,7 +70,7 @@ export const invoiceRouter = createProtectedRouter()
     .mutation('edit', {
         input: z.object({
             id: z.string().cuid(),
-            data: createInvoiceSchema
+            data: createInvoiceSchema,
         }),
         async resolve({ ctx, input }) {
             const { id, data } = input
