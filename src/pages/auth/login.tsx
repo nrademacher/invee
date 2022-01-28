@@ -19,41 +19,41 @@ export default function LogIn() {
 
     return (
         <>
-            <main className="flex items-center justify-center h-full">
+            <main className="flex h-full items-center justify-center">
                 <div>
-                    <h2 className="mb-6 text-3xl font-bold text-center">Login</h2>
+                    <h2 className="mb-6 text-center text-3xl font-bold">Login</h2>
                     <form
-                        className="flex flex-col space-y-8 border rounded p-4 w-[20rem]"
+                        className="flex w-[20rem] flex-col space-y-8 rounded border p-4"
                         onSubmit={handleSubmit(async ({ email, password }: FieldValues) => {
                             await signIn('credentials', { email, password, callbackUrl: '/' })
                         })}
                     >
                         <div className="space-y-4">
                             <div className="flex flex-col">
-                                <label className="text-sm mb-1" htmlFor="email">
+                                <label className="mb-1 text-sm" htmlFor="email">
                                     Email
                                 </label>
                                 <input
                                     id="email"
                                     type="email"
                                     {...register('email')}
-                                    className="border-gray-300 border rounded"
+                                    className="rounded border border-gray-300"
                                 />
                             </div>
                             <div className="flex flex-col">
-                                <label className="text-sm mb-1" htmlFor="password">
+                                <label className="mb-1 text-sm" htmlFor="password">
                                     Password
                                 </label>
                                 <input
                                     id="password"
                                     type="password"
                                     {...register('password')}
-                                    className="border-gray-300 border rounded"
+                                    className="rounded border border-gray-300"
                                 />
                             </div>
                         </div>
                         <button
-                            className="py-3 px-7 font-semibold text-white bg-gray-900 rounded hover:bg-gray-600"
+                            className="rounded bg-gray-900 py-3 px-7 font-semibold text-white hover:bg-gray-600"
                             type="submit"
                         >
                             Login

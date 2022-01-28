@@ -34,9 +34,9 @@ const IndexPage: NextPageWithLayout = () => {
 
     return (
         <div className="">
-            <header className="mb-12 flex justify-between items-start">
+            <header className="mb-12 flex items-start justify-between">
                 <div>
-                    <h1 className="text-6xl mb-4">
+                    <h1 className="mb-4 text-6xl">
                         Welcome to <strong>inv</strong>!
                     </h1>
                     <p>The premier way for managing invoices</p>
@@ -48,7 +48,7 @@ const IndexPage: NextPageWithLayout = () => {
                         </span>
                         <a
                             onClick={async () => await signOut()}
-                            className="text-blue-500 font-semibold cursor-pointer hover:underline"
+                            className="cursor-pointer font-semibold text-blue-500 hover:underline"
                         >
                             Logout
                         </a>
@@ -57,12 +57,12 @@ const IndexPage: NextPageWithLayout = () => {
             </header>
             {session && invoicesQuery.data ? (
                 <div>
-                    <h2 className="text-3xl font-semibold mb-6">Invoices</h2>
+                    <h2 className="mb-6 text-3xl font-semibold">Invoices</h2>
 
                     <div className="flex items-start space-x-8">
                         <section className="grid grid-cols-3 gap-4">
                             {invoicesQuery.data.map(item => (
-                                <article className="rounded p-4 space-y-2 border min-w-[25rem]" key={item.id}>
+                                <article className="min-w-[25rem] space-y-2 rounded border p-4" key={item.id}>
                                     <h3 className="text-xl font-medium">{item.publicId}</h3>
                                     <p>
                                         <span className="font-medium">Status: </span>
@@ -84,12 +84,12 @@ const IndexPage: NextPageWithLayout = () => {
                             ))}
                         </section>
                         <form
-                            className="w-[25rem] p-4 flex flex-col space-y-3 rounded border"
+                            className="flex w-[25rem] flex-col space-y-3 rounded border p-4"
                             onSubmit={handleSubmit(async (data: FieldValues) => {
                                 console.log('ID ', session.user.id)
                                 await createInvoice.mutateAsync({
                                     projectName: data.projectName,
-                                    projectDescription: "test",
+                                    projectDescription: 'test',
                                     status: 'DRAFT',
                                     payeeId: session.user.id,
                                     paymentTerms: 'NET_30',
@@ -97,7 +97,7 @@ const IndexPage: NextPageWithLayout = () => {
                             })}
                         >
                             <div className="flex flex-col">
-                                <label className="text-sm font-medium mb-1" htmlFor="project-name">
+                                <label className="mb-1 text-sm font-medium" htmlFor="project-name">
                                     Project Name
                                 </label>
                                 <input
@@ -111,7 +111,7 @@ const IndexPage: NextPageWithLayout = () => {
                             </div>
 
                             <input
-                                className="cursor-pointer w-1/3 border rounded p-2 self-end font-medium"
+                                className="w-1/3 cursor-pointer self-end rounded border p-2 font-medium"
                                 type="submit"
                                 disabled={createInvoice.isLoading}
                             />
@@ -123,14 +123,14 @@ const IndexPage: NextPageWithLayout = () => {
                 <div className="space-y-2">
                     <p className="text-lg font-medium">
                         <Link href="/auth/login">
-                            <a className="text-blue-500 cursor-pointer hover:underline">Sign in </a>
+                            <a className="cursor-pointer text-blue-500 hover:underline">Sign in </a>
                         </Link>
                         to view and create posts!
                     </p>
                     <p>
                         Need an acount?
                         <Link href="/signup">
-                            <a className="text-blue-500 cursor-pointer hover:underline"> Sign up</a>
+                            <a className="cursor-pointer text-blue-500 hover:underline"> Sign up</a>
                         </Link>
                     </p>
                 </div>

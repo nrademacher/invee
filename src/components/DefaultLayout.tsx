@@ -13,7 +13,7 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
                 <title>inv</title>
             </Head>
 
-            <div className="p-8 bg-neutral-50 text-neutral-900 subpixel-antialiased h-screen w-screen">{children}</div>
+            <div className="h-screen w-screen bg-neutral-50 p-8 text-neutral-900 subpixel-antialiased">{children}</div>
 
             {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools initialIsOpen={false} />}
         </>
