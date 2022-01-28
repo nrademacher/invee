@@ -4,9 +4,8 @@ import { trpc } from '@/lib/trpc'
 import { useEffect } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createInvoiceSchema } from '@/server/routers/invoice/input-schemata'
 import Link from 'next/link'
-
+import { InvoiceInput } from '@/server/routers/invoice/inputs'
 
 const IndexPage: NextPageWithLayout = () => {
     const { data: session } = useSession()
@@ -14,7 +13,7 @@ const IndexPage: NextPageWithLayout = () => {
     const utils = trpc.useContext()
     const invoicesQuery = trpc.useQuery(['invoice.all'], {})
     const createInvoice = trpc.useMutation(['invoice.create'], {
-       async onSuccess() {
+        async onSuccess() {
             await utils.invalidateQueries(['invoice.all'])
         },
     })
@@ -26,13 +25,12 @@ const IndexPage: NextPageWithLayout = () => {
         }
     }, [invoicesQuery.data, utils])
 
-
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm({ resolver: zodResolver(createInvoiceSchema), mode: "onSubmit" })
+    } = useForm({ resolver: zodResolver(InvoiceInput), mode: 'onSubmit' })
 
     return (
         <div className="">
@@ -88,10 +86,13 @@ const IndexPage: NextPageWithLayout = () => {
                         <form
                             className="w-[25rem] p-4 flex flex-col space-y-3 rounded border"
                             onSubmit={handleSubmit(async (data: FieldValues) => {
-                            console.log("ID ", session.user.id)
+                                console.log('ID ', session.user.id)
                                 await createInvoice.mutateAsync({
                                     projectName: data.projectName,
-                                    payeeId: String(session.user.id),
+                                    projectDescription: "test",
+                                    status: 'DRAFT',
+                                    payeeId: session.user.id,
+                                    paymentTerms: 'NET_30',
                                 })
                             })}
                         >

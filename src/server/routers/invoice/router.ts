@@ -8,11 +8,11 @@ import { TRPCError } from '@trpc/server'
 import { ErrorCode } from '@/utils/auth'
 import { createProtectedRouter } from '@/server'
 import { nanoid } from 'nanoid'
-import { createInvoiceSchema } from '.'
+import { InvoiceInput } from './inputs'
 
 export const invoiceRouter = createProtectedRouter()
     .mutation('create', {
-        input: createInvoiceSchema,
+        input: InvoiceInput,
         async resolve({ ctx, input }) {
             if (!ctx.user) {
                 throw new TRPCError({ message: ErrorCode.UserNotFound, code: 'NOT_FOUND' })
@@ -28,7 +28,6 @@ export const invoiceRouter = createProtectedRouter()
             return invoice
         },
     })
-    // read
     .query('all', {
         async resolve({ ctx }) {
             /**
@@ -71,7 +70,7 @@ export const invoiceRouter = createProtectedRouter()
     .mutation('edit', {
         input: z.object({
             id: z.string().cuid(),
-            data: createInvoiceSchema
+            data: InvoiceInput,
         }),
         async resolve({ ctx, input }) {
             const { id, data } = input

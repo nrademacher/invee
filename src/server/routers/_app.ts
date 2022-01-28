@@ -6,7 +6,7 @@ import { createRouter } from '../create-router'
 import superjson from 'superjson'
 
 import { userRouter } from './user/user'
-import { invoiceRouter } from './invoice/invoice'
+import { invoiceRouter } from './invoice'
 
 /**
  * Create your application's root router
