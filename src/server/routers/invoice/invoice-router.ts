@@ -8,7 +8,7 @@ import { TRPCError } from '@trpc/server'
 import { ErrorCode } from '@/utils/auth'
 import { createProtectedRouter } from '@/server'
 import { nanoid } from 'nanoid'
-import { InvoiceInput } from './inputs'
+import { InvoiceInput } from './invoice-inputs'
 
 export const invoiceRouter = createProtectedRouter()
     .mutation('create', {

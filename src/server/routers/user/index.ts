@@ -1,2 +1,1 @@
-export { userRouter } from './user'
-export { createUserSchema } from './input-schemata'
+export { userRouter } from './user-router'

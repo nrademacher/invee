@@ -4,7 +4,7 @@ import superjson from 'superjson'
 import prisma from '../lib/prisma'
 
 import { createSSGHelpers } from '@trpc/react/ssg'
-import { appRouter } from '@/server/routers/_app'
+import { appRouter } from '@/server/routers/app-router'
 
 /**
  * Initialize static site rendering tRPC helpers.

@@ -5,7 +5,7 @@ import { createRouter } from '../create-router'
 
 import superjson from 'superjson'
 
-import { userRouter } from './user/user'
+import { userRouter } from './user'
 import { invoiceRouter } from './invoice'
 
 /**

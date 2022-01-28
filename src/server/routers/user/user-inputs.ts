@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import isStrongPassword from 'validator/lib/isStrongPassword'
+import { _UserModel } from 'prisma/zod'
 
-export const createUserSchema = z.object({
-    email: z.string().email(),
+const passwordInput = z.object({
     password: z
         .string()
         .min(8)
@@ -10,9 +10,8 @@ export const createUserSchema = z.object({
             message:
                 'Password must contain at least one of the following characters: lower-case, upper-case, number, symbol',
         }),
-    name: z.string().min(3).max(64),
-    streedAddress: z.string().min(1).optional(),
-    city: z.string().min(1).optional(),
-    postCode: z.string().min(1).optional(),
-    country: z.string().min(1).optional(),
 })
+
+export const UserInputs = _UserModel
+    .pick({ email: true, name: true, streetAddress: true, city: true, postCode: true, country: true })
+    .merge(passwordInput)

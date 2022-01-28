@@ -1,1 +1,1 @@
-export * from './_app'
+export * from './app-router'

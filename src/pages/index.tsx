@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import { InvoiceInput } from '@/server/routers/invoice/inputs'
+import { InvoiceInput } from '@/server/routers/invoice/invoice-inputs'
 
 const IndexPage: NextPageWithLayout = () => {
     const { data: session } = useSession()
