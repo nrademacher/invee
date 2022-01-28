@@ -70,7 +70,7 @@ export default NextAuth({
                 ...session,
                 user: {
                     ...session.user,
-                    id: token.id as number,
+                    id: token.id as string,
                     name: token.username as string,
                 },
             }

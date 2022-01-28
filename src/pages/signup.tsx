@@ -1,8 +1,8 @@
-import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserSchema } from '@/server/routers/user/input-schemata'
 
