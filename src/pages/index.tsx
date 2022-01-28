@@ -4,11 +4,11 @@ import { trpc } from '@/lib/trpc'
 import { useEffect } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
 import { InvoiceInput } from '@/server/routers/invoice/invoice-inputs'
+import Link from 'next/link'
 
 const IndexPage: NextPageWithLayout = () => {
-    const { data: session } = useSession()
+    const { data: session, status: sessionStatus } = useSession()
 
     const utils = trpc.useContext()
     const invoicesQuery = trpc.useQuery(['invoice.all'], {})
@@ -28,9 +28,10 @@ const IndexPage: NextPageWithLayout = () => {
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
     } = useForm({ resolver: zodResolver(InvoiceInput), mode: 'onSubmit' })
+
+    if (sessionStatus === 'loading' || invoicesQuery.status === 'loading') return <div>Loading ...</div>
 
     return (
         <div className="">
