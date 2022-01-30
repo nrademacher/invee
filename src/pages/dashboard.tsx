@@ -1,7 +1,7 @@
 import { Avatar, Separator } from '@/components'
 import { useSessionGuard } from '@/lib'
 import { trpc } from '@/lib/trpc'
-import { AdjustmentsIcon, DotsVerticalIcon, InboxIcon, InboxInIcon, PencilIcon, ViewBoardsIcon } from '@heroicons/react/outline'
+import { AdjustmentsIcon, DotsVerticalIcon, InboxIcon, PencilIcon, ViewBoardsIcon } from '@heroicons/react/outline'
 import {
     Chart as ChartJS,
     ArcElement,
@@ -26,7 +26,7 @@ export default function Dashboard() {
 
     const revenueChartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
 
-    if (status === 'loading' || !session || invoicesQuery.isLoading) return <div>Loading ...</div>
+    if (status === 'loading' || !session || !invoicesQuery.data) return <div>Loading ...</div>
 
     return (
         <main className="flex h-full">
@@ -77,15 +77,15 @@ export default function Dashboard() {
                 </article>
             </section>
             <section className="w-full p-16">
-                <header className="mb-20 flex justify-between items-start">
+                <header className="mb-20 flex items-start justify-between">
                     <h2 className="font-caption text-5xl font-bold">Welcome, {session.user.name}</h2>
-            <button
-                className="top-16 right-16 flex items-center rounded-sm bg-neutral-900 py-3 px-5 font-semibold text-neutral-50 hover:bg-neutral-600"
-                type="submit"
-            >
-                <PencilIcon className="mr-3 h-5 w-5" />
-                <span>New Invoice</span>
-            </button>
+                    <button
+                        className="top-16 right-16 flex items-center rounded-sm bg-neutral-900 py-3 px-5 font-semibold text-neutral-50 hover:bg-neutral-600"
+                        type="submit"
+                    >
+                        <PencilIcon className="mr-3 h-5 w-5" />
+                        <span>New Invoice</span>
+                    </button>
                 </header>
                 <div className="container flex gap-3">
                     <div className="h-max w-1/4 rounded-sm border bg-white p-6 shadow-sm">
@@ -116,9 +116,9 @@ export default function Dashboard() {
                                     {
                                         label: 'Invoice statuses',
                                         data: [
-                                            invoicesQuery.data!.filter(inv => inv.status === 'DRAFT').length,
-                                            invoicesQuery.data!.filter(inv => inv.status === 'PENDING').length,
-                                            invoicesQuery.data!.filter(inv => inv.status === 'PAID').length,
+                                            invoicesQuery.data.filter(inv => inv.status === 'DRAFT').length,
+                                            invoicesQuery.data.filter(inv => inv.status === 'PENDING').length,
+                                            invoicesQuery.data.filter(inv => inv.status === 'PAID').length,
                                         ],
                                         backgroundColor: [
                                             'rgba(255, 99, 132, 0.2)',
@@ -156,7 +156,7 @@ export default function Dashboard() {
                                     {
                                         label: 'Revenue',
                                         data: revenueChartLabels.map(() =>
-                                            faker.datatype.number({ min: -1000, max: 1000 })
+                                            faker.datatype.number({ min: 0, max: 1000 })
                                         ),
                                         borderColor: 'rgb(255, 99, 132)',
                                         backgroundColor: 'rgba(255, 99, 132, 0.5)',

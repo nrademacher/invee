@@ -53,7 +53,7 @@ export default NextAuth({
                     username: user.name,
                     email: user.email,
                     name: user.name,
-                    avatarUrl: user.avatarUrl
+                    avatarUrl: user.avatarUrl,
                 }
             },
         }),
@@ -74,7 +74,7 @@ export default NextAuth({
                     ...session.user,
                     id: token.id as string,
                     name: token.username as string,
-                    avatarUrl: token.avatarUrl as string
+                    avatarUrl: token.avatarUrl as string,
                 },
             }
             return userSession

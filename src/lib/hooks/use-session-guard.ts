@@ -10,7 +10,7 @@ export function useSessionGuard(redirectRoute = '/auth/login') {
         if (status === 'unauthenticated') {
             router.push(redirectRoute)
         }
-    }, [status, router])
+    }, [status, router, redirectRoute])
 
     return { data, status }
 }

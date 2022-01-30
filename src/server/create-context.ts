@@ -25,7 +25,7 @@ async function getUserFromSession({ session }: { session: Maybe<Session>; req?: 
     if (!user) {
         return null
     }
-    const { email, name, avatarUrl} = user
+    const { email, name, avatarUrl } = user
     if (!email) {
         return null
     }
@@ -34,7 +34,7 @@ async function getUserFromSession({ session }: { session: Maybe<Session>; req?: 
         ...user,
         email,
         name,
-        avatarUrl
+        avatarUrl,
     }
 }
 
