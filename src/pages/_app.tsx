@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 import type { AppType } from 'next/dist/shared/lib/utils'
-import type { AppRouter } from '@/server/routers/_app'
+import type { AppRouter } from '@/server/routers/app-router'
 
 import type { Maybe } from '@trpc/server'
 import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
@@ -14,6 +14,13 @@ import { DefaultLayout } from '@/components'
 
 import superjson from 'superjson'
 
+import '@fontsource/open-sans/400.css'
+import '@fontsource/open-sans/500.css'
+import '@fontsource/open-sans/600.css'
+import '@fontsource/open-sans/700.css'
+import '@fontsource/pt-sans/700.css'
+import '@fontsource/pt-sans-caption/700.css'
+import '@fontsource/pt-sans-narrow/700.css'
 import '@/styles/globals.css'
 
 export type NextPageWithLayout = NextPage & {
