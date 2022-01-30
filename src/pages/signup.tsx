@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createUserSchema } from '@/server/routers/user/input-schemata'
+import { UserInputs } from '@/server/routers/user/user-inputs'
 
 export default function SignUp() {
     const { status } = useSession()
@@ -20,7 +20,7 @@ export default function SignUp() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ resolver: zodResolver(createUserSchema), mode: 'onSubmit' })
+    } = useForm({ resolver: zodResolver(UserInputs), mode: 'onSubmit' })
     const [password, setPassword] = useState('')
 
     const utils = trpc.useContext()

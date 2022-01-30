@@ -1,5 +1,5 @@
 import { createReactQueryHooks } from '@trpc/react'
-import type { AppRouter } from '@/server/routers/_app'
+import type { AppRouter } from '@/server/routers/app-router'
 
 import type { inferProcedureOutput } from '@trpc/server'
 

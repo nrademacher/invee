@@ -13,5 +13,5 @@ const passwordInput = z.object({
 })
 
 export const UserInputs = _UserModel
-    .pick({ email: true, name: true, streetAddress: true, city: true, postCode: true, country: true })
+    .pick({ email: true, name: true, streetAddress: true, city: true, postCode: true, country: true, avatarUrl: true })
     .merge(passwordInput)

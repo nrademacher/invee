@@ -5,6 +5,7 @@ declare module 'next-auth' {
     type DefaultSessionUser = NonNullable<DefaultSession['user']>
     type CustomSessionUser = DefaultSessionUser & {
         id: string
+        avatarUrl?: string
     }
     /**
      * Returned by `useSession`, `getSession` and received as a prop on the `Provider` React Context

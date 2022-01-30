@@ -1,8 +1,3 @@
-/**
- *
- * This is an example router, you can delete this file and then update `../pages/api/trpc/[trpc].tsx`
- */
-
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { ErrorCode, hashPassword, verifyPassword } from '@/utils/auth'
@@ -55,11 +50,6 @@ export const authenticatedUserRouter = createProtectedRouter()
     })
     .query('all', {
         async resolve({ ctx }) {
-            /**
-             * For pagination you can have a look at this docs site
-             * @link https://trpc.io/docs/useInfiniteQuery
-             */
-
             return ctx.prisma.user.findMany({
                 select: {
                     id: true,

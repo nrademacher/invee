@@ -22,6 +22,8 @@ model User {
   name         String @unique
   email        String @unique
   passwordHash String
+  
+  avatarUrl String?
 
   streetAddress String?
   city          String?
@@ -49,7 +51,7 @@ model Project {
   projectName        String
   projectDescription String?
 
-  invoices Invoice[]
+  invoices Invoice[] @relation(name: "InvoiceToProject")
 
   @@map("projects")
 }
@@ -90,9 +92,10 @@ model Invoice {
   sender             User          @relation(name: "InvoiceToSender", fields: [senderId], references: [id])
   senderId           String
 
-  @@map("invoices")
-  Project   Project? @relation(fields: [projectId], references: [id])
+  project   Project? @relation(name: "InvoiceToProject", fields: [projectId], references: [id])
   projectId String?
+
+  @@map("invoices")
 }
 
 enum PaymentType {

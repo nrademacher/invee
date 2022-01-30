@@ -1,13 +1,12 @@
-import type { NextPageWithLayout } from './_app'
 import { signOut, useSession } from 'next-auth/react'
 import { trpc } from '@/lib/trpc'
 import { useEffect } from 'react'
-import { FieldValues, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { InvoiceInput } from '@/server/routers/invoice/invoice-inputs'
 import Link from 'next/link'
 
-const IndexPage: NextPageWithLayout = () => {
+export default function Index() {
     const { data: session, status: sessionStatus } = useSession()
 
     const utils = trpc.useContext()
@@ -31,10 +30,10 @@ const IndexPage: NextPageWithLayout = () => {
         formState: { errors },
     } = useForm({ resolver: zodResolver(InvoiceInput), mode: 'onSubmit' })
 
-    if (sessionStatus === 'loading' || invoicesQuery.status === 'loading') return <div>Loading ...</div>
+    if (sessionStatus === 'loading' || invoicesQuery.status === 'loading') return <div className="p-8">Loading ...</div>
 
     return (
-        <div className="">
+        <div className="p-8">
             <header className="mb-12 flex items-start justify-between">
                 <div>
                     <h1 className="mb-4 text-6xl">
@@ -86,7 +85,7 @@ const IndexPage: NextPageWithLayout = () => {
                         </section>
                         <form
                             className="flex w-[25rem] flex-col space-y-3 rounded border p-4"
-                            onSubmit={handleSubmit(async (data: FieldValues) => {
+                            onSubmit={handleSubmit(async data => {
                                 console.log('ID ', session.user.id)
                                 await createInvoice.mutateAsync({
                                     projectName: data.projectName,
@@ -139,5 +138,3 @@ const IndexPage: NextPageWithLayout = () => {
         </div>
     )
 }
-
-export default IndexPage
