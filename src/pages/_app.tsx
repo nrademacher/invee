@@ -1,27 +1,23 @@
-import type { NextPage } from 'next'
-import type { AppProps } from 'next/app'
-import type { AppType } from 'next/dist/shared/lib/utils'
-import type { AppRouter } from '@/server/routers/app-router'
-
-import type { Maybe } from '@trpc/server'
-import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
-import { loggerLink } from '@trpc/client/links/loggerLink'
-import { withTRPC } from '@trpc/next'
-import { TRPCClientError } from '@trpc/client'
-
-import { SessionProvider } from 'next-auth/react'
 import { DefaultLayout } from '@/components'
-
-import superjson from 'superjson'
-
+import type { AppRouter } from '@/server/routers/app-router'
+import '@/styles/globals.css'
 import '@fontsource/open-sans/400.css'
 import '@fontsource/open-sans/500.css'
 import '@fontsource/open-sans/600.css'
 import '@fontsource/open-sans/700.css'
-import '@fontsource/pt-sans/700.css'
 import '@fontsource/pt-sans-caption/700.css'
 import '@fontsource/pt-sans-narrow/700.css'
-import '@/styles/globals.css'
+import '@fontsource/pt-sans/700.css'
+import { TRPCClientError } from '@trpc/client'
+import { httpBatchLink } from '@trpc/client/links/httpBatchLink'
+import { loggerLink } from '@trpc/client/links/loggerLink'
+import { withTRPC } from '@trpc/next'
+import type { Maybe } from '@trpc/server'
+import type { NextPage } from 'next'
+import { SessionProvider } from 'next-auth/react'
+import type { AppProps } from 'next/app'
+import type { AppType } from 'next/dist/shared/lib/utils'
+import superjson from 'superjson'
 
 export type NextPageWithLayout = NextPage & {
     getLayout?: (page: React.ReactElement) => React.ReactNode

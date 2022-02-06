@@ -1,36 +1,10 @@
 import { signOut, useSession } from 'next-auth/react'
-import { trpc } from '@/lib/trpc'
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { InvoiceInput } from '@/server/routers/invoice/invoice-inputs'
 import Link from 'next/link'
 
 export default function Index() {
     const { data: session, status: sessionStatus } = useSession()
 
-    const utils = trpc.useContext()
-    const invoicesQuery = trpc.useQuery(['invoice.all'], {})
-    const createInvoice = trpc.useMutation(['invoice.create'], {
-        async onSuccess() {
-            await utils.invalidateQueries(['invoice.all'])
-        },
-    })
-
-    // prefetch all posts for instant navigation
-    useEffect(() => {
-        for (const { id } of invoicesQuery.data ?? []) {
-            utils.prefetchQuery(['invoice.byId', { id }])
-        }
-    }, [invoicesQuery.data, utils])
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({ resolver: zodResolver(InvoiceInput), mode: 'onSubmit' })
-
-    if (sessionStatus === 'loading' || invoicesQuery.status === 'loading') return <div className="p-8">Loading ...</div>
+    if (sessionStatus === 'loading') return <div className="p-8">Loading ...</div>
 
     return (
         <div className="p-8">
@@ -55,71 +29,7 @@ export default function Index() {
                     </div>
                 )}
             </header>
-            {session && invoicesQuery.data ? (
-                <div>
-                    <h2 className="mb-6 text-3xl font-semibold">Invoices</h2>
-
-                    <div className="flex items-start space-x-8">
-                        <section className="grid grid-cols-3 gap-4">
-                            {invoicesQuery.data.map(item => (
-                                <article className="min-w-[25rem] space-y-2 rounded border p-4" key={item.id}>
-                                    <h3 className="text-xl font-medium">{item.publicId}</h3>
-                                    <p>
-                                        <span className="font-medium">Status: </span>
-                                        {item.status}
-                                    </p>
-                                    <p>
-                                        <span className="font-medium">Project: </span>
-                                        {item.projectName}
-                                    </p>
-                                    <p>
-                                        <span className="font-medium">Payment Terms: </span>
-                                        {item.paymentTerms.replace('_', ' ')}
-                                    </p>
-                                    <p>
-                                        <span className="font-medium">Client: </span>
-                                        {item.payee.name}
-                                    </p>
-                                </article>
-                            ))}
-                        </section>
-                        <form
-                            className="flex w-[25rem] flex-col space-y-3 rounded border p-4"
-                            onSubmit={handleSubmit(async data => {
-                                console.log('ID ', session.user.id)
-                                await createInvoice.mutateAsync({
-                                    projectName: data.projectName,
-                                    projectDescription: 'test',
-                                    status: 'DRAFT',
-                                    payeeId: session.user.id,
-                                    paymentTerms: 'NET_30',
-                                })
-                            })}
-                        >
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium" htmlFor="project-name">
-                                    Project Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="project-name"
-                                    {...register('projectName')}
-                                    className="rounded border border-gray-300"
-                                    disabled={createInvoice.isLoading}
-                                />
-                                {errors.projectName?.message && <p>{errors.projectName?.message}</p>}
-                            </div>
-
-                            <input
-                                className="w-1/3 cursor-pointer self-end rounded border p-2 font-medium"
-                                type="submit"
-                                disabled={createInvoice.isLoading}
-                            />
-                            {createInvoice.error && <p className="text-red-600">{createInvoice.error.message}</p>}
-                        </form>
-                    </div>
-                </div>
-            ) : (
+            {!session && (
                 <div className="space-y-2">
                     <p className="text-lg font-medium">
                         <Link href="/auth/login">

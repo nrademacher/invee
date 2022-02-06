@@ -1,2 +1,5 @@
 export { Avatar } from './Avatar'
-export { Separator } from './Separator'
+export { Button } from './Button'
+export { InveeLogo } from './InveeLogo'
+export * from './Dialog'
+export * from './Form'

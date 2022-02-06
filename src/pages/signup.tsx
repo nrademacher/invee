@@ -1,10 +1,10 @@
+import { trpc } from '@/lib/trpc'
+import { UserInputs } from '@/server/routers/user/user-inputs'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { trpc } from '@/lib/trpc'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { UserInputs } from '@/server/routers/user/user-inputs'
 
 export default function SignUp() {
     const { status } = useSession()
@@ -12,7 +12,7 @@ export default function SignUp() {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            router.push('/')
+            router.push('/dashboard')
         }
     }, [status, router])
 

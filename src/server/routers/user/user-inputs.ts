@@ -1,6 +1,6 @@
-import { z } from 'zod'
-import isStrongPassword from 'validator/lib/isStrongPassword'
 import { _UserModel } from 'prisma/zod'
+import isStrongPassword from 'validator/lib/isStrongPassword'
+import { z } from 'zod'
 
 const passwordInput = z.object({
     password: z
