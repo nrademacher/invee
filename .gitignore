@@ -34,6 +34,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# tsconfig build info
+tsconfig.tsbuildinfo
+
+
 *.db
 *.db-journal
 prisma/_sqlite/migrations
