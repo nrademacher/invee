@@ -1,8 +1,8 @@
-import { z } from 'zod'
-import { TRPCError } from '@trpc/server'
-import { ErrorCode, hashPassword, verifyPassword } from '@/utils/auth'
-import { createProtectedRouter, createRouter } from '@/server'
 import { UserInputs } from './user-inputs'
+import { createProtectedRouter, createRouter } from '@/server'
+import { ErrorCode, hashPassword, verifyPassword } from '@/utils/auth'
+import { TRPCError } from '@trpc/server'
+import { z } from 'zod'
 
 export const publicUserRouter = createRouter()
     .query('session', {
@@ -25,6 +25,12 @@ export const publicUserRouter = createRouter()
                     email,
                     name,
                     passwordHash,
+                    projects: {
+                        create: {
+                            projectName: `${name}'s default project`,
+                            projectDescription: 'Your default project for tracking your invoices',
+                        },
+                    },
                 },
             })
         },

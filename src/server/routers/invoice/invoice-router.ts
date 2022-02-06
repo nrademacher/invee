@@ -1,28 +1,31 @@
-/**
- *
- * This is an example router, you can delete this file and then update `../pages/api/trpc/[trpc].tsx`
- */
-
-import { z } from 'zod'
-import { TRPCError } from '@trpc/server'
-import { ErrorCode } from '@/utils/auth'
+import { createInvoiceSchema, editInvoiceSchema } from './invoice-inputs'
 import { createProtectedRouter } from '@/server'
+import { ErrorCode } from '@/utils/auth'
+import { TRPCError } from '@trpc/server'
 import { nanoid } from 'nanoid'
-import { InvoiceInput } from './invoice-inputs'
+import { z } from 'zod'
 
 export const invoiceRouter = createProtectedRouter()
     .mutation('create', {
-        input: InvoiceInput,
+        input: createInvoiceSchema,
         async resolve({ ctx, input }) {
             if (!ctx.user) {
                 throw new TRPCError({ message: ErrorCode.UserNotFound, code: 'NOT_FOUND' })
             }
 
+            const { items, ...rest } = input
+
             const invoice = await ctx.prisma.invoice.create({
                 data: {
-                    ...input,
+                    ...rest,
                     publicId: nanoid(),
-                    senderId: ctx.user.id,
+                    userId: ctx.user.id,
+                    items: {
+                        createMany: {
+                            data: items,
+                        },
+                    },
+                    total: items.reduce((current, item) => item.price + current, 0),
                 },
             })
             return invoice
@@ -37,10 +40,10 @@ export const invoiceRouter = createProtectedRouter()
 
             return ctx.prisma.invoice.findMany({
                 where: {
-                    senderId: ctx.user.id,
+                    userId: ctx.user.id,
                 },
                 include: {
-                    payee: {
+                    user: {
                         select: {
                             name: true,
                         },
@@ -51,12 +54,12 @@ export const invoiceRouter = createProtectedRouter()
     })
     .query('byId', {
         input: z.object({
-            id: z.string().cuid(),
+            id: z.number(),
         }),
         async resolve({ ctx, input }) {
             const { id } = input
             const invoice = await ctx.prisma.invoice.findFirst({
-                where: { senderId: ctx.user.id, id: id },
+                where: { userId: ctx.user.id, id: id },
             })
             if (!invoice) {
                 throw new TRPCError({
@@ -69,13 +72,13 @@ export const invoiceRouter = createProtectedRouter()
     })
     .mutation('edit', {
         input: z.object({
-            id: z.string().cuid(),
-            data: InvoiceInput,
+            id: z.number(),
+            data: editInvoiceSchema,
         }),
         async resolve({ ctx, input }) {
             const { id, data } = input
             const invoice = await ctx.prisma.invoice.findFirst({
-                where: { senderId: ctx.user.id, id: id },
+                where: { userId: ctx.user.id, id: id },
             })
             if (!invoice) {
                 throw new TRPCError({
@@ -91,10 +94,10 @@ export const invoiceRouter = createProtectedRouter()
         },
     })
     .mutation('delete', {
-        input: z.string().cuid(),
+        input: z.number(),
         async resolve({ input: id, ctx }) {
             const invoice = await ctx.prisma.invoice.findFirst({
-                where: { senderId: ctx.user.id, id: id },
+                where: { userId: ctx.user.id, id: id },
             })
             if (!invoice) {
                 throw new TRPCError({

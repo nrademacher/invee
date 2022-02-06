@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import NextAuth, { DefaultSession } from 'next-auth'
+import { DefaultSession } from 'next-auth'
 
 declare module 'next-auth' {
     type DefaultSessionUser = NonNullable<DefaultSession['user']>

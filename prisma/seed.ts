@@ -3,10 +3,9 @@
  *
  * @link https://www.prisma.io/docs/guides/database/seed-database
  */
-
-import { PrismaClient } from '@prisma/client'
 import { hashPassword } from '../src/utils/auth'
 import faker from '@faker-js/faker'
+import { PrismaClient } from '@prisma/client'
 import { nanoid } from 'nanoid'
 
 const prisma = new PrismaClient()

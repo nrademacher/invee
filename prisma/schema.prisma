@@ -15,49 +15,38 @@ generator zod {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @unique @default(now())
-  updatedAt DateTime @unique @default(now())
-
-  name         String @unique
-  email        String @unique
-  passwordHash String
-  
-  avatarUrl String?
-
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @unique @default(now())
+  updatedAt     DateTime  @unique @default(now())
+  passwordHash  String
+  name          String    @unique
+  /// @zod.email()
+  email         String    @unique
+  avatarUrl     String?
   streetAddress String?
   city          String?
   postCode      String?
   country       String?
-
-  projects Project[] @relation(name: "ProjectToUser")
-
-  invoicesSent     Invoice[] @relation(name: "InvoiceToSender")
-  invoicesReceived Invoice[] @relation(name: "InvoiceToPayee")
-
-  payments Payment[] @relation(name: "PaymentToUser")
+  projects      Project[] @relation(name: "ProjectToUser")
+  invoices      Invoice[] @relation(name: "InvoiceToUser")
 
   @@map("users")
 }
 
 model Project {
-  id        String   @id @default(cuid())
-  createdAt DateTime @unique @default(now())
-  updatedAt DateTime @unique @default(now())
-
-  user   User   @relation(name: "ProjectToUser", fields: [userId], references: [id])
-  userId String
-
+  id                 String    @id @default(cuid())
+  createdAt          DateTime  @unique @default(now())
+  updatedAt          DateTime  @unique @default(now())
+  user               User      @relation(name: "ProjectToUser", fields: [userId], references: [id])
+  userId             String
   projectName        String
   projectDescription String?
-
-  invoices Invoice[] @relation(name: "InvoiceToProject")
+  invoices           Invoice[] @relation(name: "InvoiceToProject")
 
   @@map("projects")
 }
 
 enum InvoiceStatus {
-  DRAFT
   PENDING
   PAID
 }
@@ -77,60 +66,57 @@ enum PaymentTerms {
 }
 
 model Invoice {
-  id                 String        @id @default(cuid())
-  publicId           String
-  createdAt          DateTime      @unique @default(now())
-  updatedAt          DateTime      @unique @default(now())
-  status             InvoiceStatus @default(DRAFT)
-  projectName        String
-  projectDescription String?
-  paymentTerms       PaymentTerms  @default(NET_30)
-  payments           Payment[]
-  items              Item[]
-  payee              User          @relation(name: "InvoiceToPayee", fields: [payeeId], references: [id])
-  payeeId            String
-  sender             User          @relation(name: "InvoiceToSender", fields: [senderId], references: [id])
-  senderId           String
-
-  project   Project? @relation(name: "InvoiceToProject", fields: [projectId], references: [id])
-  projectId String?
+  id                  Int           @id @default(autoincrement())
+  publicId            String        @unique
+  createdAt           DateTime      @unique @default(now())
+  updatedAt           DateTime      @unique @default(now())
+  /// @zod.optional()
+  isDraft             Boolean       @default(false)
+  /// @zod.optional()
+  status              InvoiceStatus @default(PENDING)
+  /// @zod.optional()
+  paymentTerms        PaymentTerms  @default(NET_30)
+  items               Item[]
+  user                User          @relation(name: "InvoiceToUser", fields: [userId], references: [id])
+  userId              String
+  project             Project?      @relation(name: "InvoiceToProject", fields: [projectId], references: [id])
+  projectId           String?
+  total               Float
+  /// @zod.min(1)
+  userStreetAddress   String
+  /// @zod.min(1)
+  userCity            String
+  /// @zod.min(1)
+  userPostCode        String
+  /// @zod.min(1)
+  userCountry         String
+  /// @zod.email()
+  clientEmail         String
+  /// @zod.min(1)
+  clientName          String
+  /// @zod.min(1)
+  clientStreetAddress String
+  /// @zod.min(1)
+  clientCity          String
+  /// @zod.min(1)
+  clientPostCode      String
+  /// @zod.min(1)
+  clientCountry       String
 
   @@map("invoices")
 }
 
-enum PaymentType {
-  STRIPE
-  PAYPAL
-}
-
-model Payment {
-  id         String      @id @default(cuid())
-  publicId   String
-  type       PaymentType
-  invoice    Invoice     @relation(fields: [invoiceId], references: [id])
-  invoiceId  String
-  user       User        @relation(name: "PaymentToUser", fields: [userId], references: [id])
-  userId     String
-  amount     Int
-  fee        Int
-  currency   String
-  success    Boolean
-  refunded   Boolean
-  data       Json
-  externalId String      @unique
-
-  @@map("payments")
-}
-
 model Item {
   id        String   @id @default(cuid())
-  createdAt DateTime @unique @default(now())
-  updatedAt DateTime @unique @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  /// @zod.min(1)
   name      String
-  quantity  Int
-  price     Int
+  /// @zod.optional()
+  quantity  Int      @default(1)
+  price     Float
   invoice   Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId String
+  invoiceId Int
 
   @@map("items")
 }

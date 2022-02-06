@@ -1,7 +1,6 @@
-import { useEffect } from 'react'
-import { useRouter } from 'next/router'
 import { signIn, useSession } from 'next-auth/react'
-
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 
 export default function LogIn() {

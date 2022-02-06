@@ -1,8 +1,7 @@
+import prisma from '@/lib/prisma'
+import { ErrorCode, verifyPassword } from '@/utils'
 import NextAuth, { Session } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-
-import { ErrorCode, verifyPassword } from '@/utils'
-import prisma from '@/lib/prisma'
 
 export default NextAuth({
     session: {
@@ -17,7 +16,7 @@ export default NextAuth({
     providers: [
         CredentialsProvider({
             id: 'credentials',
-            name: 'tRPC-Prisma-starter',
+            name: 'invee',
             type: 'credentials',
             credentials: {
                 email: { label: 'Email Address', type: 'email', placeholder: 'john.doe@example.com' },

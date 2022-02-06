@@ -5,10 +5,10 @@ export const _ItemModel = z.object({
   id: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  name: z.string(),
-  quantity: z.number().int(),
-  price: z.number().int(),
-  invoiceId: z.string(),
+  name: z.string().min(1),
+  quantity: z.number().int().optional(),
+  price: z.number(),
+  invoiceId: z.number().int(),
 })
 
 export interface CompleteItem extends z.infer<typeof _ItemModel> {

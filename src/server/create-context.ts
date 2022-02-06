@@ -1,13 +1,10 @@
-import type { GetServerSidePropsContext } from 'next'
-
-import type { Maybe } from '@trpc/server'
-import type { Session } from 'next-auth'
-
-import * as trpc from '@trpc/server'
-import * as trpcNext from '@trpc/server/adapters/next'
-
 import prisma from '@/lib/prisma'
 import { getSession } from '@/utils'
+import type { Maybe } from '@trpc/server'
+import * as trpc from '@trpc/server'
+import * as trpcNext from '@trpc/server/adapters/next'
+import type { GetServerSidePropsContext } from 'next'
+import type { Session } from 'next-auth'
 
 type CreateContextOptions = trpcNext.CreateNextContextOptions | GetServerSidePropsContext
 
