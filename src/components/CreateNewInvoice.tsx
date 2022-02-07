@@ -35,7 +35,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
 
     const itemValues = itemFields.map((_, i) => watch(`items.${i}`) as Pick<Item, 'name' | 'price' | 'quantity'>)
 
-    const hasItems: boolean = useMemo(() => {
+    const hasOnlyValidItems: boolean = useMemo(() => {
         if (!itemFields.length) return false
         if (!itemValues.every(item => Boolean(item.name) && Number(item.price) && Number(item.quantity))) {
             return false
@@ -43,10 +43,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         return true
     }, [itemFields.length, itemValues])
 
-    const memoizedTotal: number = useMemo(() => {
-        const total = itemValues.reduce((current, item) => current + item.price * item.quantity, 0)
-        return total
-    }, [itemFields.length, itemValues])
+    const memoizedTotal: number = useMemo(() => itemValues.reduce((t, i) => t + i.price * i.quantity, 0), [itemValues])
     const [invoiceTotal, setInvoiceTotal] = useState(0)
     useEffect(() => {
         if (!isNaN(Number(memoizedTotal))) {
@@ -96,7 +93,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         if (newItemEl.current) {
             newItemEl.current.scrollIntoView()
         }
-    }, [newItemEl.current])
+    }, [itemFields.length])
 
     const triggerEl = cloneElement(modalTrigger, {
         onClick: async () => {
@@ -237,7 +234,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
                             className="w-1/4"
                             primary
                             type="submit"
-                            disabled={createInvoice.isLoading || !hasItems || !isValid}
+                            disabled={createInvoice.isLoading || !hasOnlyValidItems || !isValid}
                         >
                             Create
                         </Button>
