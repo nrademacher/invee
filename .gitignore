@@ -37,10 +37,10 @@ yarn-error.log*
 # tsconfig build info
 tsconfig.tsbuildinfo
 
+# local db
 *.db
 *.db-journal
 prisma/_sqlite/migrations
-
 
 # testing
 playwright/videos
