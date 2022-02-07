@@ -1,12 +1,11 @@
-import { cloneElement, useEffect, useMemo, useRef } from 'react'
-import { useControlledSelect, useParam } from '@/lib'
-import { trpc } from '@/lib/trpc'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createInvoiceSchema } from '@/server/routers/invoice/invoice-inputs'
+import { cloneElement, useEffect, useMemo, useRef, useState } from 'react'
+import { formatPaymentTerms, useControlledSelect, useParam } from '@/lib'
+import { trpc } from '@/lib/trpc'
 import { Item, PaymentTerms } from '@prisma/client'
-import { Button, Checkbox, Dialog, DialogClose, DialogContent, DialogTrigger, InputField } from './lib'
-import Link from 'next/link'
+import { Button, Checkbox, Dialog, DialogClose, DialogContent, DialogTrigger, InputField, RefLink } from './lib'
 import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
 
 const InvoiceFormSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -21,45 +20,42 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         register,
         control,
         handleSubmit,
-        getValues,
         watch,
         reset,
         formState: { isValid },
     } = useForm({ resolver: zodResolver(createInvoiceSchema), mode: 'onBlur' })
-
     const {
         fields: itemFields,
         append,
         remove,
     } = useFieldArray({
-        control, // control props comes from useForm (optional: if you are using FormContext)
-        name: 'items', // unique name for your Field Array
+        control,
+        name: 'items',
     })
 
-    const watchFields = watch()
+    const itemValues = itemFields.map((_, i) => watch(`items.${i}`) as Pick<Item, 'name' | 'price' | 'quantity'>)
 
     const hasItems: boolean = useMemo(() => {
         if (!itemFields.length) return false
-        const values = getValues('items') as Pick<Item, 'name' | 'price' | 'quantity'>[]
-        if (!values.some(item => Boolean(item.name) && Number(item.price) && Number(item.quantity))) {
+        if (!itemValues.every(item => Boolean(item.name) && Number(item.price) && Number(item.quantity))) {
             return false
         }
         return true
-    }, [itemFields.length, watchFields, getValues])
+    }, [itemFields.length, itemValues])
 
-    const invoiceTotal: number | undefined = useMemo(() => {
-        if (!itemFields.length) return
-        const items = getValues('items') as Pick<Item, 'name' | 'price' | 'quantity'>[]
-        let total = 0
-        for (const item of items) {
-            const itemTotal = item.price * item.quantity
-            total += itemTotal
-        }
+    const memoizedTotal: number = useMemo(() => {
+        const total = itemValues.reduce((current, item) => current + item.price * item.quantity, 0)
         return total
-    }, [itemFields.length, watchFields, getValues])
+    }, [itemFields.length, itemValues])
+    const [invoiceTotal, setInvoiceTotal] = useState(0)
+    useEffect(() => {
+        if (!isNaN(Number(memoizedTotal))) {
+            setInvoiceTotal(memoizedTotal)
+        }
+    }, [memoizedTotal])
 
     const paymentTermsOptions = Object.values(PaymentTerms).map(terms => {
-        return { value: terms, label: terms }
+        return { value: terms, label: formatPaymentTerms(terms) }
     })
     const paymentTermsSelect = useControlledSelect({
         name: 'paymentTerms',
@@ -71,13 +67,13 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
 
     const { pushParam, href, isOn, clearParam } = useParam('new', 'invoice')
 
-    const utils = trpc.useContext()
+    const { invalidateQueries } = trpc.useContext()
     const createInvoice = trpc.useMutation(['invoice.create'], {
         async onSuccess() {
             console.log('SUCCESS')
             clearParam()
             reset()
-            await utils.invalidateQueries(['invoice.all'])
+            await invalidateQueries(['invoice.all'])
         },
     })
     const projectQuery = trpc.useQuery(['project.all'])
@@ -95,12 +91,12 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         placeholder: 'Add this invoice to a project (optional)',
     })
 
-    const newItem = useRef<HTMLDivElement>(null)
+    const newItemEl = useRef<HTMLElement>(null)
     useEffect(() => {
-        if (newItem.current) {
-            newItem.current.scrollIntoView()
+        if (newItemEl.current) {
+            newItemEl.current.scrollIntoView()
         }
-    }, [newItem.current])
+    }, [newItemEl.current])
 
     const triggerEl = cloneElement(modalTrigger, {
         onClick: async () => {
@@ -116,9 +112,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
             }}
         >
             <DialogTrigger asChild>
-                <Link href={href}>
-                    <a>{triggerEl}</a>
-                </Link>
+                <RefLink href={href}>{triggerEl}</RefLink>
             </DialogTrigger>
             <DialogContent onPointerDownOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
                 <form
@@ -189,7 +183,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
                     </InvoiceFormSection>
                     <InvoiceFormSection title="Items">
                         {itemFields.map((field, index) => (
-                            <div ref={newItem} key={field.id} className="grid grid-cols-5 items-baseline gap-4">
+                            <article ref={newItemEl} key={field.id} className="grid grid-cols-5 items-baseline gap-4">
                                 <div className="col-span-2">
                                     <InputField
                                         id={`item-${index}-name`}
@@ -219,7 +213,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
                                 >
                                     Remove
                                 </Button>
-                            </div>
+                            </article>
                         ))}
                         <Button
                             type="button"
@@ -229,11 +223,11 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
                         >
                             Add Item
                         </Button>
-                        {!isNaN(Number(invoiceTotal)) && (
+                        {invoiceTotal ? (
                             <p className="text-right text-xl">
                                 Total: <strong>${invoiceTotal}</strong>
                             </p>
-                        )}
+                        ) : null}
                     </InvoiceFormSection>
                     <div className="flex items-center justify-center gap-4 pt-8">
                         <DialogClose asChild>

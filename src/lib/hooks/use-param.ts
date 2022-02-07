@@ -21,7 +21,7 @@ export function useParam(key: string, value: string) {
 
     const clearParam = () => {
         // workaround to avoid usage of delete operator
-        const { [key]: value, ...query } = router.query // eslint-disable @typescript-eslint/no-unused-vars
+        const { [key]: value, ...query } = router.query // eslint-disable-line @typescript-eslint/no-unused-vars
         router.replace({
             query,
         })

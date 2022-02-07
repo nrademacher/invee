@@ -14,7 +14,7 @@
     "dev": "next dev",
     "dx": "run-s db-up db-migrate-dev db-seed dev",
     "start": "next start",
-    "format": "prisma format && prettier --ignore-path .gitignore \"**/*.+(ts|tsx|js|css|json)\" --write --list-different --config prettier.config.js",
+    "format": "prettier --ignore-path .gitignore \"**/*.+(ts|tsx|js|css|json)\" --write --list-different --config prettier.config.js",
     "lint": "eslint src",
     "lint-fix": "yarn lint --fix",
     "test-dev": "start-server-and-test dev 3000 test",
@@ -27,9 +27,9 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "./{*,{src}/**/*}.{js,ts,jsx,tsx}": [
-      "prettier --write",
-      "eslint"
+    "./{*,src/**/*}.{js,ts,jsx,tsx}": [
+      "yarn format",
+      "yarn lint-fix"
     ],
     "./prisma/schema.prisma": [
       "prisma format"

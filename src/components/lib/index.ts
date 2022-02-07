@@ -1,5 +1,6 @@
 export { Avatar } from './Avatar'
 export { Button } from './Button'
 export { InveeLogo } from './InveeLogo'
+export { RefLink } from './RefLink'
 export * from './Dialog'
 export * from './Form'
