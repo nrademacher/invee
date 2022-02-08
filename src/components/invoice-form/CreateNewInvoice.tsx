@@ -1,69 +1,26 @@
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createInvoiceSchema } from '@/server/routers/invoice/invoice-inputs'
-import { cloneElement, useEffect, useMemo, useRef, useState } from 'react'
-import { formatPaymentTerms, useControlledSelect, useParam } from '@/lib'
+import { formatPaymentTerms, useControlledSelect, useItemFields, useParam } from '@/lib'
 import { trpc } from '@/lib/trpc'
-import { Item, PaymentTerms } from '@prisma/client'
-import { Button, Checkbox, Dialog, DialogClose, DialogContent, DialogTrigger, InputField, RefLink } from './lib'
+import { cloneElement } from 'react'
+import { PaymentTerms } from '@prisma/client'
+import { InvoiceFormSection } from './InvoiceFormSection'
+import { Button, Checkbox, Dialog, DialogClose, DialogContent, DialogTrigger, InputField, RefLink } from '../lib'
 import { PlusIcon, TrashIcon } from '@heroicons/react/solid'
-
-const InvoiceFormSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-    <section className="py-6">
-        <h2 className="mb-6 font-caption text-2xl font-medium">{title}</h2>
-        <div className="space-y-6">{children}</div>
-    </section>
-)
 
 export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = ({ modalTrigger }) => {
     const {
-        register,
         control,
-        handleSubmit,
+        register,
         watch,
+        handleSubmit,
         reset,
         formState: { isValid },
     } = useForm({ resolver: zodResolver(createInvoiceSchema), mode: 'onBlur' })
-    const {
-        fields: itemFields,
-        append,
-        remove,
-    } = useFieldArray({
-        control,
-        name: 'items',
-    })
-
-    const itemValues = itemFields.map((_, i) => watch(`items.${i}`) as Pick<Item, 'name' | 'price' | 'quantity'>)
-
-    const hasOnlyValidItems: boolean = useMemo(() => {
-        if (!itemFields.length) return false
-        if (!itemValues.every(item => Boolean(item.name) && Number(item.price) && Number(item.quantity))) {
-            return false
-        }
-        return true
-    }, [itemFields.length, itemValues])
-
-    const memoizedTotal: number = useMemo(() => itemValues.reduce((t, i) => t + i.price * i.quantity, 0), [itemValues])
-    const [invoiceTotal, setInvoiceTotal] = useState(0)
-    useEffect(() => {
-        if (!isNaN(Number(memoizedTotal))) {
-            setInvoiceTotal(memoizedTotal)
-        }
-    }, [memoizedTotal])
-
-    const paymentTermsOptions = Object.values(PaymentTerms).map(terms => {
-        return { value: terms, label: formatPaymentTerms(terms) }
-    })
-    const paymentTermsSelect = useControlledSelect({
-        name: 'paymentTerms',
-        labelText: 'Payment Terms',
-        control,
-        options: paymentTermsOptions,
-        defaultValue: paymentTermsOptions.find(option => option.value === PaymentTerms.NET_30),
-    })
+    const { itemFields, append, remove, itemsAreValid, invoiceTotal, itemRef } = useItemFields({ control, watch })
 
     const { pushParam, href, isOn, clearParam } = useParam('new', 'invoice')
-
     const { invalidateQueries } = trpc.useContext()
     const createInvoice = trpc.useMutation(['invoice.create'], {
         async onSuccess() {
@@ -75,6 +32,16 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
     })
     const projectQuery = trpc.useQuery(['project.all'])
 
+    const paymentTermsOptions = Object.values(PaymentTerms).map(terms => {
+        return { value: terms, label: formatPaymentTerms(terms) }
+    })
+    const paymentTermsSelect = useControlledSelect({
+        name: 'paymentTerms',
+        labelText: 'Payment Terms',
+        control,
+        options: paymentTermsOptions,
+        defaultValue: paymentTermsOptions.find(option => option.value === PaymentTerms.NET_30),
+    })
     const projectOptions = projectQuery.data
         ? projectQuery.data.map(project => {
               return { value: project.id, label: project.projectName }
@@ -87,13 +54,6 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         options: projectOptions,
         placeholder: 'Add this invoice to a project (optional)',
     })
-
-    const newItemEl = useRef<HTMLElement>(null)
-    useEffect(() => {
-        if (newItemEl.current) {
-            newItemEl.current.scrollIntoView()
-        }
-    }, [itemFields.length])
 
     const triggerEl = cloneElement(modalTrigger, {
         onClick: async () => {
@@ -114,7 +74,6 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
             <DialogContent onPointerDownOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
                 <form
                     onSubmit={handleSubmit(async data => {
-                        console.log(data)
                         await createInvoice.mutateAsync({
                             isDraft: data.isDraft,
                             userStreetAddress: data.userStreetAddress,
@@ -180,7 +139,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
                     </InvoiceFormSection>
                     <InvoiceFormSection title="Items">
                         {itemFields.map((field, index) => (
-                            <article ref={newItemEl} key={field.id} className="grid grid-cols-5 items-baseline gap-4">
+                            <article ref={itemRef} key={field.id} className="grid grid-cols-5 items-baseline gap-4">
                                 <div className="col-span-2">
                                     <InputField
                                         id={`item-${index}-name`}
@@ -234,12 +193,11 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
                             className="w-1/4"
                             primary
                             type="submit"
-                            disabled={createInvoice.isLoading || !hasOnlyValidItems || !isValid}
+                            disabled={createInvoice.isLoading || !itemsAreValid || !isValid}
                         >
                             Create
                         </Button>
                     </div>
-                    {createInvoice.error && <p className="text-red-600">{createInvoice.error.message}</p>}
                 </form>
             </DialogContent>
         </Dialog>

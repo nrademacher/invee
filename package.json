@@ -60,6 +60,7 @@
     "bcrypt": "^5.0.1",
     "chart.js": "^3.7.0",
     "classnames": "^2.3.1",
+    "dayjs": "^1.10.7",
     "lodash.merge": "^4.6.2",
     "nanoid": "^3.2.0",
     "next": "^12.0.10",
