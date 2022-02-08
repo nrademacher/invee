@@ -19,7 +19,6 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         formState: { isValid },
     } = useForm({ resolver: zodResolver(createInvoiceSchema), mode: 'onBlur' })
     const { itemFields, append, remove, itemsAreValid, invoiceTotal, itemRef } = useItemFields({ control, watch })
-
     const { pushParam, href, isOn, clearParam } = useParam('new', 'invoice')
     const { invalidateQueries } = trpc.useContext()
     const createInvoice = trpc.useMutation(['invoice.create'], {
@@ -42,6 +41,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         options: paymentTermsOptions,
         defaultValue: paymentTermsOptions.find(option => option.value === PaymentTerms.NET_30),
     })
+
     const projectOptions = projectQuery.data
         ? projectQuery.data.map(project => {
               return { value: project.id, label: project.projectName }

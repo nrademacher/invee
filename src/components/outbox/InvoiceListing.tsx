@@ -1,7 +1,7 @@
-import { CalendarIcon, CashIcon, HashtagIcon, UserIcon } from '@heroicons/react/solid'
 import { InvoiceStatus } from '@prisma/client'
 import classNames from 'classnames'
-import dayjs from 'dayjs'
+import { RefLink } from '..'
+import { CalendarIcon, CashIcon, HashtagIcon, UserIcon } from '@heroicons/react/solid'
 
 const InvoiceStatusLabel: React.FC<{ status: InvoiceStatus; isDraft: boolean }> = ({ status, isDraft }) => {
     return (
@@ -26,21 +26,23 @@ export const InvoiceListing: React.FC<{
     status: InvoiceStatus
     isDraft: boolean
 }> = ({ id, date, clientName, total, status, isDraft }) => (
-    <article className="flex w-full transform cursor-pointer items-center justify-between border border-neutral-200 bg-white px-8 py-4 transition-transform hover:scale-105">
-        <span className="flex w-2/12 items-center text-xl font-semibold">
-            <HashtagIcon className="mr-1 h-6 w-6 text-neutral-400" />
-            {id}
-        </span>
-        <span className="flex w-3/12">
-            <CalendarIcon className="mr-4 h-6 w-6 text-neutral-300" />
-            {dayjs(date).toISOString().split('T')[0].replaceAll('-', '/')}
-        </span>
-        <span className="flex w-4/12 justify-self-center font-medium">
-            <UserIcon className="mr-4 h-6 w-6 text-neutral-300" /> {clientName}
-        </span>
-        <span className="flex w-2/12 text-lg font-bold">
-            <CashIcon className="mr-4 h-6 w-6 text-neutral-300" /> ${total}
-        </span>
-        <InvoiceStatusLabel status={status} isDraft={isDraft} />
-    </article>
+    <RefLink href={`/invoices/${id}`}>
+        <article className="flex w-full transform cursor-pointer items-center justify-between border border-neutral-200 bg-white px-8 py-4 transition-all hover:scale-105 hover:shadow">
+            <span className="flex w-2/12 items-center text-xl font-semibold">
+                <HashtagIcon className="mr-1 h-6 w-6 text-neutral-400" />
+                {id}
+            </span>
+            <span className="flex w-3/12">
+                <CalendarIcon className="mr-4 h-6 w-6 text-neutral-300" />
+                {date.toLocaleDateString()}
+            </span>
+            <span className="flex w-4/12 justify-self-center font-medium">
+                <UserIcon className="mr-4 h-6 w-6 text-neutral-300" /> {clientName}
+            </span>
+            <span className="flex w-2/12 text-lg font-bold">
+                <CashIcon className="mr-4 h-6 w-6 text-neutral-300" /> ${total}
+            </span>
+            <InvoiceStatusLabel status={status} isDraft={isDraft} />
+        </article>
+    </RefLink>
 )

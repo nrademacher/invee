@@ -1,4 +1,4 @@
-import { Item } from '@prisma/client'
+import type { Item } from '@prisma/client'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Control, FieldValues, useFieldArray, UseFormWatch } from 'react-hook-form'
 

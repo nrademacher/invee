@@ -60,6 +60,10 @@ export const invoiceRouter = createProtectedRouter()
             const { id } = input
             const invoice = await ctx.prisma.invoice.findFirst({
                 where: { userId: ctx.user.id, id: id },
+                include: {
+                    project: true,
+                    items: true,
+                },
             })
             if (!invoice) {
                 throw new TRPCError({

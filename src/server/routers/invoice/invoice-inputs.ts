@@ -19,4 +19,7 @@ export const createInvoiceSchema = _InvoiceModel
     })
     .extend({ items: z.array(_ItemModel.pick({ name: true, quantity: true, price: true })) })
 
-export const editInvoiceSchema = createInvoiceSchema.omit({ items: true }).merge(_InvoiceModel.pick({ status: true }))
+export const editInvoiceSchema = createInvoiceSchema
+    .deepPartial()
+    .omit({ items: true })
+    .merge(_InvoiceModel.pick({ status: true }))
