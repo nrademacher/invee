@@ -39,7 +39,7 @@
     "seed": "yarn ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@fontsource/open-sans": "^4.5.3",
+    "@fontsource/open-sans": "^4.5.4",
     "@fontsource/pt-sans": "^4.5.1",
     "@fontsource/pt-sans-caption": "^4.5.1",
     "@fontsource/pt-sans-narrow": "^4.5.1",
