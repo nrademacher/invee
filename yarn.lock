@@ -677,10 +677,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@neodrag/react@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@neodrag/react/-/react-0.1.2.tgz#d4186d768b2cd9fa0c5357c6fb661bce526fe06d"
-  integrity sha512-DMWyjELXE9YklToGL/Ca8NCCkywokQGUoZ4ZHAY4fbbpCtGLbKdCJZ89NIIZ8S5J1swkleX7wXYHwMVbM0PG7Q==
+"@neodrag/react@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@neodrag/react/-/react-0.1.3.tgz#d01ca8b1062fda1b350c343a355f27415a0a2c70"
+  integrity sha512-xrTQEVLxIvIt7PWVWRYAkovAWj1B+1Wgk4WwMx7tG3rhL0ffbKmYqtPvJcUrzMC1klGxt609AemV+1nUtGEc+w==
 
 "@next/env@12.0.10":
   version "12.0.10"
