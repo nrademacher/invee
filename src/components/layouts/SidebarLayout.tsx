@@ -3,11 +3,9 @@ import Head from 'next/head'
 import { Avatar, InveeLogo } from '../lib'
 import { AdjustmentsIcon, DotsVerticalIcon, HomeIcon, InboxIcon, ViewBoardsIcon } from '@heroicons/react/outline'
 
-const SidebarMenuItem: React.FC<{ link: string; icon: JSX.Element; children: React.ReactText }> = ({
-    link,
-    icon,
-    children,
-}) => (
+type SidebarMenuItemProps = { link: string; icon: JSX.Element; children: React.ReactText }
+
+const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({ link, icon, children }) => (
     <Link href={link}>
         <a className="flex cursor-pointer items-center">
             <span className="mr-3 h-5 w-5 text-neutral-500">{icon}</span>
@@ -16,10 +14,18 @@ const SidebarMenuItem: React.FC<{ link: string; icon: JSX.Element; children: Rea
     </Link>
 )
 
-export const SidebarLayout: React.FC<{ children: React.ReactNode; pageName: string; currentUserName: string }> = ({
+type SidebarLayoutProps = {
+    children: React.ReactNode
+    pageName: string
+    currentUserName: string
+    currentUserAvatar?: string
+}
+
+export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
     children,
     pageName,
     currentUserName,
+    currentUserAvatar,
 }) => (
     <>
         <Head>
@@ -55,7 +61,7 @@ export const SidebarLayout: React.FC<{ children: React.ReactNode; pageName: stri
                     <div className="flex max-w-min items-center text-neutral-200 lg:mx-auto">
                         <span className="mr-1 flex items-center lg:mr-3">
                             <Avatar
-                                imageUrl="https://i.pravatar.cc/150?img=68"
+                                imageUrl={currentUserAvatar || ''}
                                 userName={currentUserName}
                                 className="mr-2.5 h-11 w-11 border-2 border-neutral-200"
                             />

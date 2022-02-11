@@ -1,7 +1,8 @@
-import { Control, Controller, useWatch } from 'react-hook-form'
+import { type Control, Controller, useWatch } from 'react-hook-form'
 import { useMemo } from 'react'
 import { Label } from '@/components/lib'
-import Select, { OptionsTypeBase } from 'react-select'
+// @ts-ignore Not sure why it works like this
+import Select, { type OptionsTypeBase } from 'react-select'
 
 type UseControlledSelect = {
     name: string

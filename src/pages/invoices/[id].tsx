@@ -1,21 +1,21 @@
-import { formatPaymentTerms, useSessionGuard } from '@/lib'
+import { useSessionGuard } from '@/hooks'
+import { formatPaymentTerms } from '@/lib'
 import { trpc } from '@/lib/trpc'
+import { useRouter } from 'next/router'
 import NextError from 'next/error'
 import { Button, RefLink, SidebarLayout } from '@/components'
-import { ArrowLeftIcon, CheckCircleIcon, ExclamationCircleIcon, TrashIcon } from '@heroicons/react/solid'
-import { useRouter } from 'next/router'
+import { ArrowLeftIcon, CheckCircleIcon, ExclamationCircleIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid'
+import { EditInvoiceDraft } from '@/components/invoice-form'
 
 export default function InvoicePage() {
     const { session, status, query } = useSessionGuard()
     const invoiceQuery = trpc.useQuery(['invoice.byId', { id: Number(query.id) }])
-
-    const { push } = useRouter()
     const { invalidateQueries } = trpc.useContext()
+    const { push } = useRouter()
     const deleteInvoice = trpc.useMutation(['invoice.delete'], {
         async onSuccess() {
-            console.log('SUCCESS')
-            push('/outbox')
             await invalidateQueries(['invoice.all'])
+            push('/outbox')
         },
     })
     const editInvoice = trpc.useMutation(['invoice.edit'], {
@@ -29,12 +29,12 @@ export default function InvoicePage() {
         return <NextError title={invoiceQuery.error.message} statusCode={invoiceQuery.error.data?.httpStatus ?? 500} />
     }
     if (invoiceQuery.status !== 'success') {
-        return <div>Loading...</div>
+        return <div className="mx-auto h-full w-full">Loading...</div>
     }
 
     const { data: invoice } = invoiceQuery
 
-    if (status === 'loading' || !session || !invoice) return <div>Loading ...</div>
+    if (status === 'loading' || !session || !invoice) return <div className="mx-auto h-full w-full">Loading ...</div>
 
     return (
         <SidebarLayout pageName={`Invoice #${invoice.id}`} currentUserName={session.user.name as string}>
@@ -56,7 +56,7 @@ export default function InvoicePage() {
                                     onClick={async () =>
                                         await editInvoice.mutateAsync({
                                             id: invoice.id,
-                                            data: { isDraft: false },
+                                            data: { isDraft: false, items: invoice.items },
                                         })
                                     }
                                     icon={<ExclamationCircleIcon />}
@@ -69,7 +69,10 @@ export default function InvoicePage() {
                                     onClick={async () =>
                                         await editInvoice.mutateAsync({
                                             id: invoice.id,
-                                            data: { status: invoice.status === 'PENDING' ? 'PAID' : 'PENDING' },
+                                            data: {
+                                                status: invoice.status === 'PENDING' ? 'PAID' : 'PENDING',
+                                                items: invoice.items,
+                                            },
                                         })
                                     }
                                     icon={
@@ -82,12 +85,10 @@ export default function InvoicePage() {
                             )}
                         </div>
                     </header>
-                    <section className="grid w-full place-items-center py-8">
-                        <div className="w-full space-y-4">
+                    <section className="grid w-full place-items-center space-y-8 divide-y divide-neutral-200 py-8">
+                        <article className="w-full">
+                            <h2 className="mb-3 font-heading text-3xl">Client</h2>
                             <table className="table w-full divide-y divide-neutral-200">
-                                <thead className="font-heading text-3xl">
-                                    <h2 className="mb-3">Client</h2>
-                                </thead>
                                 <tbody className="w-full">
                                     <tr className="table-row">
                                         <td className="table-cell py-2 font-semibold">Name</td>
@@ -115,10 +116,10 @@ export default function InvoicePage() {
                                     </tr>
                                 </tbody>
                             </table>
+                        </article>
+                        <article className="w-full pt-4">
+                            <h2 className="mb-3 font-heading text-3xl">Items</h2>
                             <table className="table w-full divide-y divide-neutral-200">
-                                <thead className="table-header-group font-heading text-3xl">
-                                    <h2 className="mb-3">Items</h2>
-                                </thead>
                                 <tbody className="w-full">
                                     <tr className="table-row">
                                         <td className="table-cell py-2 font-semibold">Name</td>
@@ -136,10 +137,10 @@ export default function InvoicePage() {
                                     ))}
                                 </tbody>
                             </table>
+                        </article>
+                        <article className="w-full pt-4">
+                            <h2 className="mb-3 font-heading text-3xl">Other</h2>
                             <table className="table w-full divide-y divide-neutral-200">
-                                <thead className="font-heading text-3xl">
-                                    <h2 className="mb-3">Other</h2>
-                                </thead>
                                 <tbody className="w-full">
                                     {invoice.project && (
                                         <tr className="table-row">
@@ -153,10 +154,10 @@ export default function InvoicePage() {
                                     </tr>
                                 </tbody>
                             </table>
-                            <p className="text-right text-3xl font-semibold">
-                                Total: <span className="font-bold">${invoice.total}</span>
-                            </p>
-                        </div>
+                        </article>
+                        <p className="w-full pt-12 text-right text-3xl font-semibold">
+                            Total: <span className="font-bold">${invoice.total}</span>
+                        </p>
                     </section>
                     <footer className="flex justify-between pt-4">
                         <RefLink href="/outbox">
@@ -164,6 +165,16 @@ export default function InvoicePage() {
                                 Back to Outbox
                             </Button>
                         </RefLink>
+                        {invoice.isDraft && (
+                            <EditInvoiceDraft
+                                invoiceDraft={invoice}
+                                modalTrigger={
+                                    <Button primary icon={<PencilIcon />}>
+                                        Edit Draft
+                                    </Button>
+                                }
+                            />
+                        )}
                     </footer>
                 </article>
             </main>

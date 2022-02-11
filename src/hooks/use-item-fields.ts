@@ -4,6 +4,8 @@ import { Control, FieldValues, useFieldArray, UseFormWatch } from 'react-hook-fo
 
 type UseItemFields = { control: Control; watch: UseFormWatch<FieldValues> }
 
+type InvoiceItemInput = Pick<Item, 'name' | 'price' | 'quantity'>
+
 export function useItemFields({ control, watch }: UseItemFields) {
     const {
         fields: itemFields,
@@ -14,7 +16,7 @@ export function useItemFields({ control, watch }: UseItemFields) {
         name: 'items',
     })
 
-    const itemValues = itemFields.map((_, i) => watch(`items.${i}`) as Pick<Item, 'name' | 'price' | 'quantity'>)
+    const itemValues = itemFields.map((_, i) => watch(`items.${i}`) as InvoiceItemInput)
 
     const itemsAreValid: boolean = useMemo(() => {
         if (!itemFields.length) return false

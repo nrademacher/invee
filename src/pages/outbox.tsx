@@ -1,11 +1,10 @@
-import { useSessionGuard } from '@/lib'
+import { useSessionGuard } from '@/hooks'
 import { trpc } from '@/lib/trpc'
 import { Button, CreateNewInvoice, SidebarLayout, InvoiceListing } from '@/components'
 import { PencilIcon } from '@heroicons/react/solid'
 
 export default function Outbox() {
     const { session, status } = useSessionGuard()
-
     const invoicesQuery = trpc.useQuery(['invoice.all'])
 
     if (status === 'loading' || !session || !invoicesQuery.data) return <div>Loading ...</div>
@@ -15,7 +14,7 @@ export default function Outbox() {
             <main className="flex w-full flex-col items-center space-y-3 py-2 lg:px-24 lg:py-16">
                 <header className="mb-2 mt-3 flex w-full items-center justify-between pl-2 lg:mt-0 lg:mb-4 lg:pl-0">
                     <div>
-                        <h1 className="mb-2 font-heading text-3xl lg:mb-3 lg:text-5xl">Your Outbox 📮</h1>
+                        <h1 className="mb-2 font-heading text-3xl lg:text-5xl">Your Outbox 📮</h1>
                         <h2 className="font-caption text-lg text-neutral-400 lg:text-lg">
                             Overview of your non-draft invoices
                         </h2>
@@ -30,7 +29,7 @@ export default function Outbox() {
                         />
                     </div>
                 </header>
-                <section className="w-full space-y-1 px-2 text-xs md:text-sm lg:space-y-2 lg:px-0 lg:text-base">
+                <section className="grid w-full gap-2 px-2 text-xs md:text-sm lg:px-0 lg:text-base">
                     {invoicesQuery.data.map(inv => (
                         <InvoiceListing
                             key={inv.publicId}
