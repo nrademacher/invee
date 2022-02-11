@@ -12,12 +12,9 @@ export const invoiceRouter = createProtectedRouter()
             if (!ctx.user) {
                 throw new TRPCError({ message: ErrorCode.UserNotFound, code: 'NOT_FOUND' })
             }
-
             const { items, ...rest } = input
-
             const invoice = await ctx.prisma.invoice.create({
                 data: {
-                    ...rest,
                     publicId: nanoid(),
                     userId: ctx.user.id,
                     items: {
@@ -25,7 +22,8 @@ export const invoiceRouter = createProtectedRouter()
                             data: items,
                         },
                     },
-                    total: items.reduce((current, item) => item.price + current, 0),
+                    total: items.reduce((current, item) => current + item.price * (item.quantity || 1), 0),
+                    ...rest,
                 },
             })
             return invoice
@@ -60,6 +58,10 @@ export const invoiceRouter = createProtectedRouter()
             const { id } = input
             const invoice = await ctx.prisma.invoice.findFirst({
                 where: { userId: ctx.user.id, id: id },
+                include: {
+                    project: true,
+                    items: true,
+                },
             })
             if (!invoice) {
                 throw new TRPCError({
@@ -79,6 +81,7 @@ export const invoiceRouter = createProtectedRouter()
             const { id, data } = input
             const invoice = await ctx.prisma.invoice.findFirst({
                 where: { userId: ctx.user.id, id: id },
+                include: { items: true },
             })
             if (!invoice) {
                 throw new TRPCError({
@@ -86,11 +89,43 @@ export const invoiceRouter = createProtectedRouter()
                     message: 'Invoice not found',
                 })
             }
-            await ctx.prisma.invoice.update({
+            const { items, ...rest } = data
+            const itemIds = items.map(item => item.id)
+            for (const id of invoice.items.map(item => item.id)) {
+                if (!itemIds.includes(id)) {
+                    await ctx.prisma.item.delete({
+                        where: { id },
+                    })
+                }
+            }
+            const updatedItems = items.filter(item => item.id)
+            const newItems = items.filter(item => !item.id)
+            for (const item of updatedItems) {
+                await ctx.prisma.item.update({
+                    where: { id: item.id },
+                    data: { name: item.name, quantity: item.quantity, price: item.price },
+                })
+            }
+            const invoiceWithUpdatedItems = await ctx.prisma.invoice.update({
                 where: { id },
-                data,
+                include: { items: true },
+                data: {
+                    ...rest,
+                    items: {
+                        createMany: {
+                            data: newItems,
+                        },
+                    },
+                },
             })
-            return invoice
+            const newTotal = invoiceWithUpdatedItems.items.reduce((t, i) => t + i.price * i.quantity, 0)
+            const editedInvoice = await ctx.prisma.invoice.update({
+                where: { id },
+                data: {
+                    total: newTotal,
+                },
+            })
+            return editedInvoice
         },
     })
     .mutation('delete', {

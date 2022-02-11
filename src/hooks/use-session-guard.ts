@@ -2,13 +2,13 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 
 export function useSessionGuard() {
-    const router = useRouter()
+    const { push, query } = useRouter()
     const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
-            router.push('/auth/login')
+            push('/auth/login')
         },
     })
 
-    return { session, status }
+    return { session, status, query }
 }
