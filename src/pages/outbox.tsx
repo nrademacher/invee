@@ -16,7 +16,7 @@ export default function Outbox() {
                     <div>
                         <h1 className="mb-2 font-heading text-3xl lg:text-5xl">Your Outbox 📮</h1>
                         <h2 className="font-caption text-lg text-neutral-400 lg:text-lg">
-                            Overview of your non-draft invoices
+                            Overview of your {invoicesQuery.data.length} invoices
                         </h2>
                     </div>
                     <div className="hidden lg:inline-block">

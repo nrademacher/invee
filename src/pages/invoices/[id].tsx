@@ -39,7 +39,7 @@ export default function InvoicePage() {
     return (
         <SidebarLayout pageName={`Invoice #${invoice.id}`} currentUserName={session.user.name as string}>
             <main className="mx-2 grid w-full place-items-center lg:mx-24">
-                <article className="mt-4 w-full divide-y divide-neutral-200 rounded-sm border border-neutral-200 bg-white p-12 lg:mt-0 lg:max-w-screen-lg">
+                <article className="mt-4 w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-12 lg:mt-0 lg:max-w-screen-lg">
                     <header className="flex flex-col items-center justify-between pb-4 md:flex-row">
                         <h1 className="mb-4 font-heading text-5xl md:mb-0 lg:text-6xl">Invoice #{invoice.id}</h1>
                         <div className="flex justify-between">
@@ -88,7 +88,7 @@ export default function InvoicePage() {
                     <section className="grid w-full place-items-center space-y-8 divide-y divide-neutral-200 py-8">
                         <article className="w-full">
                             <h2 className="mb-3 font-heading text-3xl">Client</h2>
-                            <table className="table w-full divide-y divide-neutral-200">
+                            <table className="table w-full">
                                 <tbody className="w-full">
                                     <tr className="table-row">
                                         <td className="table-cell py-2 font-semibold">Name</td>
@@ -119,7 +119,7 @@ export default function InvoicePage() {
                         </article>
                         <article className="w-full pt-4">
                             <h2 className="mb-3 font-heading text-3xl">Items</h2>
-                            <table className="table w-full divide-y divide-neutral-200">
+                            <table className="table w-full">
                                 <tbody className="w-full">
                                     <tr className="table-row">
                                         <td className="table-cell py-2 font-semibold">Name</td>
@@ -140,7 +140,7 @@ export default function InvoicePage() {
                         </article>
                         <article className="w-full pt-4">
                             <h2 className="mb-3 font-heading text-3xl">Other</h2>
-                            <table className="table w-full divide-y divide-neutral-200">
+                            <table className="table w-full">
                                 <tbody className="w-full">
                                     {invoice.project && (
                                         <tr className="table-row">
@@ -155,7 +155,7 @@ export default function InvoicePage() {
                                 </tbody>
                             </table>
                         </article>
-                        <p className="w-full pt-12 text-right text-3xl font-semibold">
+                        <p className="w-full pt-8 text-right text-3xl font-semibold">
                             Total: <span className="font-bold">${invoice.total}</span>
                         </p>
                     </section>
