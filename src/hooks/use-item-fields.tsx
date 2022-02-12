@@ -40,61 +40,62 @@ export function useItemFields({ control, watch, register }: UseItemFields) {
         }
     }, [fields.length])
 
-    const ItemFieldsSection: React.FC = () =>
-        useMemo(
-            () => (
-                <InvoiceFormSection title="Items">
-                    {fields.map((field, index) => (
-                        <article ref={itemRef} key={field.id} className="grid grid-cols-5 items-baseline gap-4">
-                            <div className="col-span-2">
-                                <InputField
-                                    id={`item-${index}-name`}
-                                    labelText="Item description"
-                                    {...register(`items.${index}.name`)}
-                                />
-                            </div>
+    const itemFieldsSection = useMemo(
+        () => (
+            <InvoiceFormSection title="Items">
+                {fields.map((field, index) => (
+                    <article ref={itemRef} key={field.id} className="grid grid-cols-5 items-baseline gap-4">
+                        <div className="col-span-2">
                             <InputField
-                                type="number"
-                                min={0.01}
-                                step=".01"
-                                id={`item-${index}-price`}
-                                labelText="Price"
-                                {...register(`items.${index}.price`, { valueAsNumber: true })}
+                                id={`item-${index}-name`}
+                                labelText="Item description"
+                                {...register(`items.${index}.name`)}
                             />
-                            <InputField
-                                type="number"
-                                min={1}
-                                id={`item-${index}-quantity`}
-                                labelText="Quantity"
-                                {...register(`items.${index}.quantity`, { valueAsNumber: true })}
-                            />
-                            <Button
-                                type="button"
-                                className="max-w-max place-self-end text-sm"
-                                onClick={() => remove(index)}
-                                icon={<TrashIcon />}
-                            >
-                                Remove
-                            </Button>
-                        </article>
-                    ))}
-                    <Button
-                        type="button"
-                        primary
-                        icon={<PlusCircleIcon />}
-                        onClick={() => append({ name: '', price: '', quantity: 1 })}
-                    >
-                        Add Item
-                    </Button>
-                    {invoiceTotal ? (
-                        <p className="text-right text-xl">
-                            Total: <strong>${invoiceTotal}</strong>
-                        </p>
-                    ) : null}
-                </InvoiceFormSection>
-            ),
-            [fields, append, register, remove, invoiceTotal]
-        )
+                        </div>
+                        <InputField
+                            type="number"
+                            min={0.01}
+                            step=".01"
+                            id={`item-${index}-price`}
+                            labelText="Price"
+                            {...register(`items.${index}.price`, { valueAsNumber: true })}
+                        />
+                        <InputField
+                            type="number"
+                            min={1}
+                            id={`item-${index}-quantity`}
+                            labelText="Quantity"
+                            {...register(`items.${index}.quantity`, { valueAsNumber: true })}
+                        />
+                        <Button
+                            type="button"
+                            className="max-w-max place-self-end text-sm"
+                            onClick={() => remove(index)}
+                            icon={<TrashIcon />}
+                        >
+                            Remove
+                        </Button>
+                    </article>
+                ))}
+                <Button
+                    type="button"
+                    primary
+                    icon={<PlusCircleIcon />}
+                    onClick={() => append({ name: '', price: '', quantity: 1 })}
+                >
+                    Add Item
+                </Button>
+                {invoiceTotal ? (
+                    <p className="text-right text-xl">
+                        Total: <strong>${invoiceTotal}</strong>
+                    </p>
+                ) : null}
+            </InvoiceFormSection>
+        ),
+        [fields, append, register, remove, invoiceTotal]
+    )
+
+    const ItemFieldsSection: React.FC = () => itemFieldsSection
 
     return { ItemFieldsSection, itemsAreValid, invoiceTotal }
 }

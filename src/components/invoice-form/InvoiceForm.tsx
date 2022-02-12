@@ -39,9 +39,15 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
         setValue,
         handleSubmit,
         reset,
-        formState: { isValid },
+        formState: { isValid, isSubmitSuccessful },
     } = useForm({ resolver: zodResolver(createInvoiceSchema), mode: 'onBlur' })
     const { ItemFieldsSection, itemsAreValid } = useItemFields({ control, watch, register })
+
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            reset()
+        }
+    }, [isSubmitSuccessful, reset])
 
     useEffect(() => {
         if (isDraft && invoiceDraft) {
@@ -49,7 +55,7 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
                 setValue(draftField, invoiceDraft[draftField as keyof InvoiceWithItems])
             }
         }
-    }, [modalOpen])
+    }, [modalOpen, isDraft, invoiceDraft, setValue])
 
     const paymentTermsOptions = Object.values(PaymentTerms).map(terms => {
         return { value: terms, label: formatPaymentTerms(terms) }
@@ -73,8 +79,8 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
             open={modalOpen}
             onOpenChange={open => {
                 if (!open) {
-                    reset()
                     onModalChange()
+                    reset()
                 }
             }}
         >
