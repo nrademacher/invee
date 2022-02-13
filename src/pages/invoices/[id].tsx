@@ -20,7 +20,6 @@ export default function InvoicePage() {
     })
     const editInvoice = trpc.useMutation(['invoice.edit'], {
         async onSuccess() {
-            console.log('SUCCESS')
             await invoiceQuery.refetch()
         },
     })
@@ -38,8 +37,8 @@ export default function InvoicePage() {
 
     return (
         <SidebarLayout pageName={`Invoice #${invoice.id}`} currentUserName={session.user.name as string}>
-            <main className="mx-2 grid w-full place-items-center lg:mx-24">
-                <article className="mt-4 w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-12 lg:mt-0 lg:max-w-screen-lg">
+            <main className="mx-2 mt-4 grid place-items-center lg:mx-0 lg:mt-0 lg:h-full">
+                <article className="w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-12 lg:mt-0 lg:max-w-screen-lg">
                     <header className="flex flex-col items-center justify-between pb-4 md:flex-row">
                         <h1 className="mb-4 font-heading text-5xl md:mb-0 lg:text-6xl">Invoice #{invoice.id}</h1>
                         <div className="flex justify-between">

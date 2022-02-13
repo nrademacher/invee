@@ -31,3 +31,5 @@ export const editInvoiceSchema = createInvoiceSchema
     .omit({ items: true })
     .merge(editItemsSchema)
     .merge(_InvoiceModel.pick({ status: true }))
+
+export type InvoiceSchemata = typeof createInvoiceSchema | typeof editInvoiceSchema

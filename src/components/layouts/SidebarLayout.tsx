@@ -73,7 +73,7 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
                     </div>
                 </article>
             </section>
-            {children}
+            <div className="m-auto h-full w-full overflow-y-auto">{children}</div>
         </div>
     </>
 )

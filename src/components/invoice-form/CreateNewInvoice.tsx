@@ -1,5 +1,6 @@
 import { useParam } from '@/hooks'
 import { trpc } from '@/lib/trpc'
+import { createInvoiceSchema } from '@/server/routers/invoice/invoice-inputs'
 import type { FieldValues } from 'react-hook-form'
 import { InvoiceForm } from './InvoiceForm'
 
@@ -37,6 +38,7 @@ export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = 
         <InvoiceForm
             href={href}
             isDraft={false}
+            schema={createInvoiceSchema}
             onModalChange={clearParam}
             modalOpen={isOn}
             modalTrigger={modalTrigger}
