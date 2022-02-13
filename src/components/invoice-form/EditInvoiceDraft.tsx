@@ -3,6 +3,7 @@ import { useParam } from '@/hooks'
 import { trpc } from '@/lib/trpc'
 import type { FieldValues } from 'react-hook-form'
 import { InvoiceForm } from './InvoiceForm'
+import { editInvoiceSchema } from '@/server/routers/invoice/invoice-inputs'
 
 interface IEditInvoiceDraft {
     modalTrigger: React.ReactElement
@@ -46,6 +47,7 @@ export const EditInvoiceDraft: React.FC<IEditInvoiceDraft> = ({ modalTrigger, in
             href={href}
             isDraft={true}
             invoiceDraft={invoiceDraft}
+            schema={editInvoiceSchema}
             onModalChange={clearParam}
             modalOpen={isOn}
             modalTrigger={modalTrigger}

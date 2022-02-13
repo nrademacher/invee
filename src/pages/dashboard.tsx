@@ -1,152 +1,102 @@
-import {
-    ArcElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LineElement,
-    LinearScale,
-    PointElement,
-    Title,
-    Tooltip,
-} from 'chart.js'
-import { useRef } from 'react'
-import { useDraggable } from '@neodrag/react'
-import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
-import { CreateNewInvoice, SidebarLayout } from '@/components'
-import { Button } from '@/components/lib'
-import { PencilIcon } from '@heroicons/react/solid'
-import { Line, Pie } from 'react-chartjs-2'
-import faker from '@faker-js/faker'
+import { useSessionGuard } from '@/hooks'
 import { trpc } from '@/lib/trpc'
-
-ChartJS.register(ArcElement, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale, Title)
-
-const DashboardItem: React.FC<{ className?: string; children: React.ReactNode }> = ({ className, children }) => {
-    const draggableRef = useRef(null)
-    useDraggable(draggableRef)
-
-    return (
-        <article ref={draggableRef} className={`cursor-move rounded-sm border bg-white p-8 ${className}`}>
-            {children}
-        </article>
-    )
-}
+import { useMemo } from 'react'
+import { Button, CreateNewInvoice, SidebarLayout } from '@/components'
+import { InvoiceStatusChart, RevenueChart } from '@/components/dashboard'
+import { PencilIcon } from '@heroicons/react/solid'
 
 export default function Dashboard() {
-    const router = useRouter()
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push('/auth/login')
-        },
-    })
-    const invoicesQuery = trpc.useQuery(['invoice.all'])
+    const { session, status } = useSessionGuard()
+    const { data } = trpc.useQuery(['invoice.all'])
 
-    const revenueChartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    const invoices = useMemo(() => {
+        if (!data) return []
+        return data
+    }, [data])
 
-    if (status === 'loading' || !session) return <div>Loading ...</div>
+    const revenueChartLabels = useMemo(() => {
+        const months = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December',
+        ]
+        const monthsOfCurrentYear = []
+        const currentMonth = new Date().getMonth()
+        for (let i = 0; i <= currentMonth; i++) {
+            monthsOfCurrentYear.push(months[i])
+        }
+        return monthsOfCurrentYear
+    }, [])
+
+    const invoicesChartData = useMemo(
+        () => [
+            invoices?.filter(inv => inv.isDraft).length,
+            invoices?.filter(inv => !inv.isDraft && inv.status === 'PENDING').length,
+            invoices?.filter(inv => !inv.isDraft && inv.status === 'PAID').length,
+        ],
+        [invoices]
+    )
+
+    const receivedRevenueChartData = useMemo(
+        () =>
+            revenueChartLabels.map((_, idx) => {
+                const paidInvoicesFromMonth = invoices?.filter(
+                    inv => new Date(inv.createdAt).getMonth() === idx && inv.status === 'PAID'
+                )
+                const revenueFromMonth = paidInvoicesFromMonth?.reduce((total, inv) => total + inv.total, 0)
+                return revenueFromMonth || 0
+            }),
+        [invoices, revenueChartLabels]
+    )
+
+    const expectedRevenueChartData = useMemo(
+        () =>
+            revenueChartLabels.map((_, idx) => {
+                const paidInvoicesFromMonth = invoices?.filter(
+                    inv => new Date(inv.createdAt).getMonth() === idx && !inv.isDraft && inv.status === 'PENDING'
+                )
+                const revenueFromMonth = paidInvoicesFromMonth?.reduce((total, inv) => total + inv.total, 0)
+                return revenueFromMonth || 0
+            }),
+        [invoices, revenueChartLabels]
+    )
+
+    if (status === 'loading' || !session || !invoices) return <div>Loading ...</div>
 
     return (
         <SidebarLayout pageName="Dashboard" currentUserName={session.user.name as string}>
-            <main className="mx-auto h-full w-full p-4 pt-8 lg:p-16 lg:pl-24">
-                <div className="grid grid-cols-1 gap-2 lg:grid-cols-12">
-                    <DashboardItem className="flex flex-col justify-between lg:col-start-1 lg:col-end-4 lg:row-start-1 lg:row-end-2">
-                        <h1 className="font-caption text-4xl font-bold lg:text-5xl">Welcome, {session.user.name} 👋</h1>
-                        <div className="flex items-center self-end">
-                            <span className="mr-4 text-4xl lg:text-5xl">👉</span>
-                            <CreateNewInvoice
-                                modalTrigger={
-                                    <Button primary icon={<PencilIcon />}>
-                                        New Invoice
-                                    </Button>
-                                }
-                            />
-                        </div>
-                    </DashboardItem>
-                    {invoicesQuery.data && (
-                        <DashboardItem className="lg:col-start-1 lg:col-end-4 lg:row-start-2 lg:row-end-4">
-                            <h3 className="mb-3 font-heading-narrow text-3xl">State of your invoices</h3>
-                            <Pie
-                                options={{
-                                    plugins: {
-                                        tooltip: {
-                                            bodyFont: { family: 'Open Sans' },
-                                            bodyAlign: 'center',
-                                            displayColors: false,
-                                            padding: 8,
-                                        },
-                                        legend: {
-                                            labels: {
-                                                // This more specific font property overrides the global property
-                                                font: {
-                                                    size: 12,
-                                                    family: 'Open Sans',
-                                                },
-                                            },
-                                        },
-                                    },
-                                }}
-                                data={{
-                                    labels: ['Draft', 'Pending', 'Paid'],
-                                    datasets: [
-                                        {
-                                            label: 'Invoice statuses',
-                                            data: [
-                                                invoicesQuery.data.filter(inv => inv.isDraft).length,
-                                                invoicesQuery.data.filter(
-                                                    inv => !inv.isDraft && inv.status === 'PENDING'
-                                                ).length,
-                                                invoicesQuery.data.filter(inv => !inv.isDraft && inv.status === 'PAID')
-                                                    .length,
-                                            ],
-                                            backgroundColor: [
-                                                'rgba(255, 99, 132, 0.2)',
-                                                'rgba(54, 162, 235, 0.2)',
-                                                'rgba(255, 206, 86, 0.2)',
-                                            ],
-                                            borderColor: [
-                                                'rgba(255, 99, 132, 1)',
-                                                'rgba(54, 162, 235, 1)',
-                                                'rgba(255, 206, 86, 1)',
-                                            ],
-                                            borderWidth: 1,
-                                        },
-                                    ],
-                                }}
-                            />
-                        </DashboardItem>
-                    )}
-                    <DashboardItem className="lg:col-start-4 lg:col-end-13 lg:row-start-1 lg:row-end-4">
-                        <h3 className="font-heading-narrow text-3xl">Revenue</h3>
-                        <Line
-                            options={{
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        display: false,
-                                    },
-                                    title: {
-                                        display: true,
-                                    },
-                                },
-                            }}
-                            data={{
-                                labels: revenueChartLabels,
-                                datasets: [
-                                    {
-                                        label: 'Revenue',
-                                        data: revenueChartLabels.map(() =>
-                                            faker.datatype.number({ min: 0, max: 1000 })
-                                        ),
-                                        borderColor: 'rgb(255, 99, 132)',
-                                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                                    },
-                                ],
-                            }}
+            <main className="mx-2 mt-4 grid place-items-center lg:mx-0 lg:mt-0 lg:h-full">
+                <article className="w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-12 sm:max-w-screen-sm md:max-w-screen-md lg:mt-0 lg:max-w-screen-lg">
+                    <header className="flex flex-col items-center justify-between pb-4 md:flex-row">
+                        <h1 className="mb-4 font-caption text-4xl font-bold md:mb-0 lg:text-5xl">
+                            Welcome, {session.user.name as string} 👋
+                        </h1>
+                        <CreateNewInvoice
+                            modalTrigger={
+                                <Button primary icon={<PencilIcon />}>
+                                    New Invoice
+                                </Button>
+                            }
                         />
-                    </DashboardItem>
-                </div>
+                    </header>
+                    <div className="divide-y-200 space-y-8 divide-y py-6">
+                        <InvoiceStatusChart data={invoicesChartData} invoiceTotal={invoices.length} />
+                        <RevenueChart
+                            expectedRevenueData={expectedRevenueChartData}
+                            receivedRevenueData={receivedRevenueChartData}
+                            revenueLabels={revenueChartLabels}
+                        />
+                    </div>
+                </article>
             </main>
         </SidebarLayout>
     )

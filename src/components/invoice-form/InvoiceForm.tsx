@@ -1,7 +1,7 @@
 import type { InvoiceWithItems } from './types'
 import { type FieldValues, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createInvoiceSchema } from '@/server/routers/invoice/invoice-inputs'
+import type { InvoiceSchemata } from '@/server/routers/invoice/invoice-inputs'
 import { useItemFields } from '@/hooks'
 import { trpc } from '@/lib/trpc'
 import { PaymentTerms } from '@prisma/client'
@@ -14,6 +14,7 @@ import { ControlledSelect } from './ControlledSelect'
 interface IInvoiceForm {
     href: any
     isDraft: boolean
+    schema: InvoiceSchemata
     invoiceDraft?: InvoiceWithItems
     modalOpen: boolean
     modalTrigger: React.ReactElement
@@ -31,6 +32,7 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
     href,
     isDraft,
     invoiceDraft,
+    schema,
 }) => {
     const {
         control,
@@ -40,7 +42,7 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
         handleSubmit,
         reset,
         formState: { isValid, isSubmitSuccessful },
-    } = useForm({ resolver: zodResolver(createInvoiceSchema), mode: 'onBlur' })
+    } = useForm({ resolver: zodResolver(schema), mode: 'onBlur' })
     const { ItemFieldsSection, itemsAreValid } = useItemFields({ control, watch, register })
 
     useEffect(() => {
