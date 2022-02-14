@@ -69,6 +69,7 @@
     "react-query": "^3.34.14",
     "react-select": "^5.2.2",
     "superjson": "^1.7.4",
+    "tailwindcss-hero-patterns": "^0.0.1",
     "validator": "^13.7.0",
     "zod": "^3.0.0"
   },

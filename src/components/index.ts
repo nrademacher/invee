@@ -1,4 +1,5 @@
 export * from './lib'
 export * from './layouts'
-export { CreateNewInvoice } from './invoice-form'
-export { InvoiceListing } from './outbox'
+export * from './dashboard'
+export * from './invoice-form'
+export * from './outbox'

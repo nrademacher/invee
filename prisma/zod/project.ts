@@ -1,18 +1,18 @@
-import * as z from 'zod'
-import { CompleteUser, UserModel, CompleteInvoice, InvoiceModel } from './index'
+import * as z from "zod"
+import { CompleteUser, UserModel, CompleteInvoice, InvoiceModel } from "./index"
 
 export const _ProjectModel = z.object({
-    id: z.string(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-    userId: z.string(),
-    projectName: z.string(),
-    projectDescription: z.string().nullish(),
+  id: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  userId: z.string(),
+  projectName: z.string(),
+  projectDescription: z.string().nullish(),
 })
 
 export interface CompleteProject extends z.infer<typeof _ProjectModel> {
-    user: CompleteUser
-    invoices: CompleteInvoice[]
+  user: CompleteUser
+  invoices: CompleteInvoice[]
 }
 
 /**
@@ -20,9 +20,7 @@ export interface CompleteProject extends z.infer<typeof _ProjectModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const ProjectModel: z.ZodSchema<CompleteProject> = z.lazy(() =>
-    _ProjectModel.extend({
-        user: UserModel,
-        invoices: InvoiceModel.array(),
-    })
-)
+export const ProjectModel: z.ZodSchema<CompleteProject> = z.lazy(() => _ProjectModel.extend({
+  user: UserModel,
+  invoices: InvoiceModel.array(),
+}))

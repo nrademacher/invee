@@ -1,8 +1,7 @@
 import { type Control, type FieldValues, useFieldArray, type UseFormRegister, type UseFormWatch } from 'react-hook-form'
 import type { Item } from '@prisma/client'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { InvoiceFormSection } from '@/components/invoice-form/InvoiceFormSection'
-import { Button, InputField } from '@/components'
+import { InvoiceFormSection, Button, InputField } from '@/components'
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/solid'
 
 type UseItemFields = { control: Control; watch: UseFormWatch<FieldValues>; register: UseFormRegister<FieldValues> }
@@ -44,18 +43,14 @@ export function useItemFields({ control, watch, register }: UseItemFields) {
         () => (
             <InvoiceFormSection title="Items">
                 {fields.map((field, index) => (
-                    <article ref={itemRef} key={field.id} className="grid grid-cols-5 items-baseline gap-4">
-                        <div className="col-span-2">
-                            <InputField
-                                id={`item-${index}-name`}
-                                labelText="Item description"
-                                {...register(`items.${index}.name`)}
-                            />
-                        </div>
+                    <article ref={itemRef} key={field.id} className="flex items-baseline gap-4">
+                        <InputField
+                            id={`item-${index}-name`}
+                            labelText="Item description"
+                            {...register(`items.${index}.name`)}
+                        />
                         <InputField
                             type="number"
-                            min={0.01}
-                            step=".01"
                             id={`item-${index}-price`}
                             labelText="Price"
                             {...register(`items.${index}.price`, { valueAsNumber: true })}
@@ -69,7 +64,7 @@ export function useItemFields({ control, watch, register }: UseItemFields) {
                         />
                         <Button
                             type="button"
-                            className="max-w-max place-self-end text-sm"
+                            className="max-w-max self-end text-sm"
                             onClick={() => remove(index)}
                             icon={<TrashIcon />}
                         >
@@ -87,7 +82,7 @@ export function useItemFields({ control, watch, register }: UseItemFields) {
                 </Button>
                 {invoiceTotal ? (
                     <p className="text-right text-xl">
-                        Total: <strong>${invoiceTotal}</strong>
+                        Total: <strong>${invoiceTotal.toFixed(2)}</strong>
                     </p>
                 ) : null}
             </InvoiceFormSection>

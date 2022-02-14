@@ -10,13 +10,13 @@ module.exports = {
       'heading-narrow': "'PT Sans Narrow', sans-serif",
     },
     extend: {
-      gridTemplateColumns: {
-        sidebar: 'minmax(auto, 20rem) 1fr',
+      gridTemplateRows: {
+        sandwich: 'auto 1fr auto',
       },
     },
   },
   variants: {
     extend: {},
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [require('@tailwindcss/forms'), require('tailwindcss-hero-patterns')],
 }
