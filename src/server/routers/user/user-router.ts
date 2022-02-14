@@ -1,4 +1,4 @@
-import { UserInputs } from './user-inputs'
+import { createUserSchema } from './user-inputs'
 import { createProtectedRouter, createRouter } from '@/server'
 import { ErrorCode, hashPassword, verifyPassword } from '@/utils/auth'
 import { TRPCError } from '@trpc/server'
@@ -11,7 +11,7 @@ export const publicUserRouter = createRouter()
         },
     })
     .mutation('create', {
-        input: UserInputs,
+        input: createUserSchema,
         async resolve({ ctx, input }) {
             const { email, password, name } = input
 
@@ -94,7 +94,7 @@ export const authenticatedUserRouter = createProtectedRouter()
     .mutation('edit', {
         input: z.object({
             password: z.string(),
-            data: UserInputs,
+            data: createUserSchema,
         }),
         async resolve({ ctx, input }) {
             const { password, data } = input

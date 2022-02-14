@@ -1,18 +1,19 @@
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { FieldValues, useForm } from 'react-hook-form'
+import { type FieldValues, useForm } from 'react-hook-form'
 
 export default function LogIn() {
     const { status } = useSession()
     const router = useRouter()
-    const { register, handleSubmit } = useForm()
 
     useEffect(() => {
         if (status === 'authenticated') {
             router.push('/')
         }
     }, [status, router])
+
+    const { register, handleSubmit } = useForm()
 
     if (status !== 'unauthenticated') return null
 
