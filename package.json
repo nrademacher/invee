@@ -65,7 +65,7 @@
     "react-hook-form": "^7.27.0",
     "react-query": "^3.34.14",
     "react-select": "^5.2.2",
-    "superjson": "^1.7.4",
+    "superjson": "^1.8.1",
     "validator": "^13.7.0",
     "zod": "^3.0.0"
   },
