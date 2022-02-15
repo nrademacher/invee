@@ -6,7 +6,7 @@ test('go to /', async () => {
     await page.waitForSelector(`text=invee`)
 })
 
-test('go to post', async () => {
+test('go to Sign Up page', async () => {
     await page.goto('http://localhost:3000')
 
     await page.waitForSelector(`text=Sign Up`)

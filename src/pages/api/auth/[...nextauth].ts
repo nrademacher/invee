@@ -4,10 +4,6 @@ import NextAuth, { Session } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 export default NextAuth({
-    session: {
-        strategy: 'jwt',
-    },
-    secret: process.env.JWT_SECRET,
     pages: {
         signIn: '/auth/login',
         signOut: '/auth/logout',
@@ -57,6 +53,10 @@ export default NextAuth({
             },
         }),
     ],
+    session: {
+        strategy: 'jwt',
+    },
+    secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
