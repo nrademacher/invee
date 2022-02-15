@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import { Avatar, InveeLogo } from '../lib'
-import { AdjustmentsIcon, DotsVerticalIcon, HomeIcon, InboxIcon, ViewBoardsIcon } from '@heroicons/react/outline'
+import { AdjustmentsIcon, HomeIcon, InboxIcon, LogoutIcon, ViewBoardsIcon } from '@heroicons/react/outline'
+import { signOut } from 'next-auth/react'
 
 type SidebarMenuItemProps = { link: string; icon: JSX.Element; children: React.ReactText }
 
@@ -67,8 +68,8 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({
                             />
                             <span className="hidden font-medium lg:inline-block">{currentUserName}</span>{' '}
                         </span>
-                        <a className="">
-                            <DotsVerticalIcon className="h-5 w-5 text-neutral-400" />
+                        <a className="cursor-pointer" title="Sign out" onClick={async () => await signOut()}>
+                            <LogoutIcon className="h-5 w-5 text-neutral-400" />
                         </a>
                     </div>
                 </article>

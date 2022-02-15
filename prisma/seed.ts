@@ -4,34 +4,17 @@
  * @link https://www.prisma.io/docs/guides/database/seed-database
  */
 import { hashPassword } from '../src/utils/auth'
-import faker from '@faker-js/faker'
 import { PrismaClient } from '@prisma/client'
 import { nanoid } from 'nanoid'
 
 const prisma = new PrismaClient()
-async function main() {
-    let passwordHash = await hashPassword('hello-world-1')
-    const { id: senderId } = await prisma.user.create({
-        data: {
-            email: faker.internet.email(),
-            name: faker.name.findName(),
-            streetAddress: faker.address.streetAddress(),
-            city: faker.address.city(),
-            postCode: faker.address.zipCode(),
-            country: faker.address.country(),
-            passwordHash,
-        },
-    })
 
-    passwordHash = await hashPassword('hello-world-2')
-    const { id: payeeId } = await prisma.user.create({
+async function main() {
+    const passwordHash = await hashPassword('hello-world')
+    const { id: userId } = await prisma.user.create({
         data: {
-            email: faker.internet.email(),
-            name: faker.name.findName(),
-            streetAddress: faker.address.streetAddress(),
-            city: faker.address.city(),
-            postCode: faker.address.zipCode(),
-            country: faker.address.country(),
+            email: 'debug@testuser.com',
+            name: 'debug user',
             passwordHash,
         },
     })
@@ -40,17 +23,27 @@ async function main() {
         data: {
             status: 'PENDING',
             publicId: nanoid(),
-            projectName: 'hello world invoice',
             paymentTerms: 'NET_30',
-            senderId,
-            payeeId,
+            isDraft: true,
+            userCity: 'debug user city',
+            userCountry: 'debug user country',
+            userPostCode: 'debug user post code',
+            userStreetAddress: 'debug user street address',
+            clientCity: 'debug payee city',
+            clientCountry: 'debug payee country',
+            clientEmail: 'debug@debugpayee.com',
+            clientName: 'debug payee',
+            clientPostCode: 'debug payee postcode',
+            userId,
+            clientStreetAddress: 'debug street address',
             items: {
                 create: {
-                    name: 'Hello world item',
+                    name: 'debug item',
                     price: 99,
                     quantity: 3,
                 },
             },
+            total: 3 * 99,
         },
     })
 }

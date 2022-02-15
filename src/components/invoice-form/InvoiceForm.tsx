@@ -1,7 +1,8 @@
+import type { UrlObject } from 'url'
+import type { InvoiceSchemata } from '@/server/routers/invoice/invoice-inputs'
 import type { InvoiceWithItems } from './types'
 import { type FieldValues, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { InvoiceSchemata } from '@/server/routers/invoice/invoice-inputs'
 import { useItemFields } from '@/hooks'
 import { trpc } from '@/lib/trpc'
 import { PaymentTerms } from '@prisma/client'
@@ -12,7 +13,7 @@ import { Button, Checkbox, Dialog, DialogClose, DialogContent, DialogTrigger, In
 import { ControlledSelect } from './ControlledSelect'
 
 interface IInvoiceForm {
-    href: any
+    href: UrlObject
     isDraft: boolean
     schema: InvoiceSchemata
     invoiceDraft?: InvoiceWithItems
