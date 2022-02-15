@@ -39,7 +39,7 @@
     "seed": "yarn ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@fontsource/open-sans": "^4.5.4",
+    "@fontsource/open-sans": "^4.5.5",
     "@fontsource/pt-sans": "^4.5.1",
     "@fontsource/pt-sans-caption": "^4.5.1",
     "@fontsource/pt-sans-narrow": "^4.5.1",
@@ -65,7 +65,7 @@
     "react-hook-form": "^7.27.0",
     "react-query": "^3.34.14",
     "react-select": "^5.2.2",
-    "superjson": "^1.7.4",
+    "superjson": "^1.8.1",
     "validator": "^13.7.0",
     "zod": "^3.0.0"
   },
@@ -73,7 +73,7 @@
     "@tailwindcss/forms": "^0.4.0",
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^27.0.1",
-    "@types/node": "^17.0.16",
+    "@types/node": "^17.0.18",
     "@types/react": "^17.0.39",
     "@types/validator": "^13.7.1",
     "@typescript-eslint/eslint-plugin": "^4.30.0",
