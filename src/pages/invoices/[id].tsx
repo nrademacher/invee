@@ -38,15 +38,15 @@ export default function InvoicePage() {
     return (
         <SidebarLayout pageName={`Invoice #${invoice.id}`} currentUserName={session.user.name as string}>
             <main className="mx-2 mt-4 grid place-items-center lg:mx-0 lg:mt-0 lg:h-full">
-                <article className="w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-12 lg:mt-0 lg:max-w-screen-lg">
+                <article className="w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-6 md:p-12 lg:mt-0 lg:max-w-screen-lg">
                     <header className="flex flex-col items-center justify-between pb-4 md:flex-row">
                         <h1 className="mb-4 font-heading text-5xl md:mb-0 lg:text-6xl">Invoice #{invoice.id}</h1>
-                        <div className="flex justify-between">
+                        <div className="flex max-w-max flex-col justify-between text-sm md:flex-row md:text-base">
                             <Button
                                 onClick={async () => await deleteInvoice.mutateAsync(invoice.id)}
                                 icon={<TrashIcon />}
                                 danger
-                                className="mr-4"
+                                className="mb-2 md:mb-0 md:mr-4"
                             >
                                 Delete
                             </Button>
@@ -158,7 +158,7 @@ export default function InvoicePage() {
                             Total: <span className="font-bold">${invoice.total}</span>
                         </p>
                     </section>
-                    <footer className="flex justify-between pt-4">
+                    <footer className="flex flex-col justify-between space-y-2 pt-4 md:flex-row md:space-y-0">
                         <RefLink href="/outbox">
                             <Button primary icon={<ArrowLeftIcon />}>
                                 Back to Outbox
