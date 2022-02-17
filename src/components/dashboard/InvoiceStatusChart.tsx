@@ -7,7 +7,7 @@ export const InvoiceStatusChart: React.FC<{ invoiceTotal: number; data: number[]
     <section>
         <h3 className="mb-4 font-heading-narrow text-3xl md:text-4xl">State of your Invoices</h3>
         <div className="flex flex-col-reverse md:flex-row">
-            <article className="mx-auto mb-3 flex items-center divide-x divide-neutral-200 text-lg">
+            <article className="mx-auto mb-3 flex items-center divide-x divide-neutral-200 md:text-lg">
                 <section className="pr-2 text-xl">
                     <span className="font-bold">Total: </span>
                     <span className="font-semibold">{invoiceTotal}</span>

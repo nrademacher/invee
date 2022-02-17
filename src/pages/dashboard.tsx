@@ -71,9 +71,9 @@ export default function Dashboard() {
     return (
         <SidebarLayout pageName="Dashboard" currentUserName={session.user.name as string}>
             <main className="mx-2 mt-4 grid place-items-center lg:mx-0 lg:mt-0 lg:h-full">
-                <article className="w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-12 sm:max-w-screen-sm md:max-w-screen-md lg:mt-0 lg:max-w-screen-lg">
+                <article className="w-full divide-y divide-neutral-300 rounded-sm border border-neutral-200 bg-white p-6 sm:max-w-screen-sm md:max-w-screen-md md:p-12 lg:mt-0 lg:max-w-screen-lg">
                     <header className="flex flex-col items-center justify-between pb-6 md:flex-row">
-                        <h1 className="font-caption text-4xl font-bold md:mb-0 lg:text-5xl">
+                        <h1 className="mb-6 font-caption text-5xl font-bold md:mb-0">
                             Welcome, {session.user.name as string} 👋
                         </h1>
                         <CreateNewInvoice

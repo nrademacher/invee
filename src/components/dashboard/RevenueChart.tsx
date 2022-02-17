@@ -19,7 +19,7 @@ export const RevenueChart: React.FC<{
 }> = ({ expectedRevenueData, receivedRevenueData, revenueLabels }) => (
     <section className="">
         <h3 className="pt-4 pb-8 font-heading-narrow text-3xl md:text-4xl">Revenue this Year</h3>
-        <section className="mx-auto flex max-w-max space-x-3 divide-x divide-neutral-200 text-lg">
+        <section className="mx-auto flex max-w-max space-x-3 divide-x divide-neutral-200 md:text-lg">
             <div className="">
                 <span className="font-semibold">${expectedRevenueData[new Date().getMonth()]} </span>
                 <span className="font-semibold text-yellow-600">pending</span>
