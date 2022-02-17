@@ -1,19 +1,21 @@
+import nextJest from 'next/jest'
 import type { Config } from '@jest/types'
+
+const createJestConfig = nextJest({
+    dir: './',
+})
 
 const config: Config.InitialOptions = {
     verbose: true,
     roots: ['<rootDir>'],
+    testEnvironment: 'jest-environment-jsdom',
     testMatch: ['**/tests/**/*.+(ts|tsx|js)', '**/?(*.)+(spec|test).+(ts|tsx|js)'],
     testPathIgnorePatterns: ['<rootDir>/.next', '<rootDir>/playwright/'],
-    transform: {
-        '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
-    },
     transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$'],
-    testEnvironment: 'jsdom',
     moduleNameMapper: {
         '^@components(.*)$': '<rootDir>/components$1',
         '^@lib(.*)$': '<rootDir>/lib$1',
     },
 }
 
-export default config
+export default createJestConfig(config)
