@@ -93,9 +93,9 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
             <DialogContent onPointerDownOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
                 <form
                     onSubmit={handleSubmit(submitAction)}
-                    className="flex flex-col divide-y divide-neutral-300 px-16 py-12"
+                    className="flex flex-col divide-y divide-neutral-300 px-8 py-6 md:px-16 md:py-12"
                 >
-                    <header className="mb-4 flex items-baseline justify-between">
+                    <header className="mb-4 flex items-end justify-between">
                         <h1 className="font-heading text-4xl">{isDraft ? 'Edit Draft' : 'New Invoice'}</h1>
                         {!isDraft && <Checkbox id="is-draft" labelText="Save as Draft" {...register('isDraft')} />}
                     </header>
@@ -152,11 +152,11 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
                         />
                     </InvoiceFormSection>
                     <ItemFieldsSection />
-                    <div className="flex items-center justify-center gap-4 pt-8">
+                    <div className="flex flex-col items-center justify-center gap-4 pt-8 md:flex-row">
                         <DialogClose asChild>
-                            <Button className="w-1/4">Cancel</Button>
+                            <Button className="w-full md:w-1/4">Cancel</Button>
                         </DialogClose>
-                        <Button className="w-1/4" primary type="submit" disabled={!itemsAreValid || !isValid}>
+                        <Button className="w-full md:w-1/4" primary type="submit" disabled={!itemsAreValid || !isValid}>
                             {isDraft ? 'Save' : 'Create'}
                         </Button>
                     </div>
