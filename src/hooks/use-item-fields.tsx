@@ -43,7 +43,7 @@ export function useItemFields({ control, watch, register }: UseItemFields) {
         () => (
             <InvoiceFormSection title="Items">
                 {fields.map((field, index) => (
-                    <article ref={itemRef} key={field.id} className="flex items-baseline gap-4">
+                    <article ref={itemRef} key={field.id} className="flex flex-col items-baseline gap-4 md:flex-row">
                         <InputField
                             id={`item-${index}-name`}
                             labelText="Item description"

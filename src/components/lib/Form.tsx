@@ -12,7 +12,7 @@ export const Label: React.FC<LabelProps> = ({ children, ...props }) => (
 type InputProps = JSX.IntrinsicElements['input'] & { labelText: React.ReactText }
 
 export const InputField = forwardRef<HTMLInputElement, InputProps>(({ labelText, ...props }, forwardedRef) => (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col">
         <Label htmlFor={props.id}>{labelText}</Label>
         <input
             ref={forwardedRef}
@@ -27,7 +27,7 @@ InputField.displayName = 'InputField'
 
 export const Checkbox = forwardRef<HTMLInputElement, InputProps>(({ labelText, ...props }, forwardedRef) => (
     <div className="flex">
-        <Label className="mr-2" htmlFor={props.id}>
+        <Label className="mr-2 text-xs md:text-sm" htmlFor={props.id}>
             {labelText}
         </Label>
         <input
