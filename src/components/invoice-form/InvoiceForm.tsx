@@ -4,7 +4,7 @@ import type { InvoiceWithItems } from './types'
 import { type FieldValues, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useItemFields } from '@/hooks'
-import { trpc } from '@/lib/trpc'
+import { useTRPCQuery } from '@/lib/trpc'
 import { PaymentTerms } from '@prisma/client'
 import { formatPaymentTerms } from '@/lib'
 import { cloneElement, useEffect } from 'react'
@@ -64,7 +64,7 @@ export const InvoiceForm: React.FC<IInvoiceForm> = ({
         return { value: terms, label: formatPaymentTerms(terms) }
     })
 
-    const projectQuery = trpc.useQuery(['project.all'])
+    const projectQuery = useTRPCQuery(['project.all'])
     const projectOptions = projectQuery.data
         ? projectQuery.data.map(project => {
               return { value: project.id, label: project.projectName }

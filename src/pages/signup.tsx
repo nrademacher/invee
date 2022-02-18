@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserSchema } from '@/server/routers/user/user-inputs'
-import { trpc } from '@/lib/trpc'
+import { useTRPCContext, useTRPCMutation } from '@/lib/trpc'
 
 export default function SignUp() {
     const { status } = useSession()
@@ -23,8 +23,8 @@ export default function SignUp() {
     } = useForm({ resolver: zodResolver(createUserSchema), mode: 'onSubmit' })
     const [password, setPassword] = useState('')
 
-    const { invalidateQueries } = trpc.useContext()
-    const createUser = trpc.useMutation(['user.create'], {
+    const { invalidateQueries } = useTRPCContext()
+    const createUser = useTRPCMutation(['user.create'], {
         async onSuccess({ email }) {
             await invalidateQueries(['user.all'])
             await signIn('credentials', { email, password, callbackUrl: '/dashboard' })

@@ -1,6 +1,6 @@
 import type { InvoiceWithItems } from './types'
 import { useParam } from '@/hooks'
-import { trpc } from '@/lib/trpc'
+import { useTRPCMutation, useTRPCQuery } from '@/lib/trpc'
 import type { FieldValues } from 'react-hook-form'
 import { InvoiceForm } from './InvoiceForm'
 import { editInvoiceSchema } from '@/server/routers/invoice/invoice-inputs'
@@ -13,8 +13,8 @@ interface IEditInvoiceDraft {
 export const EditInvoiceDraft: React.FC<IEditInvoiceDraft> = ({ modalTrigger, invoiceDraft }) => {
     const { pushParam, href, isOn, clearParam } = useParam('edit', String(invoiceDraft.id))
 
-    const { refetch } = trpc.useQuery(['invoice.byId', { id: invoiceDraft.id }])
-    const editInvoice = trpc.useMutation(['invoice.edit'], {
+    const { refetch } = useTRPCQuery(['invoice.byId', { id: invoiceDraft.id }])
+    const editInvoice = useTRPCMutation(['invoice.edit'], {
         async onSuccess() {
             await refetch()
             clearParam()

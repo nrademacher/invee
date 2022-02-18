@@ -1,11 +1,11 @@
 import { useSessionGuard } from '@/hooks'
-import { trpc } from '@/lib/trpc'
+import { useTRPCQuery } from '@/lib/trpc'
 import { Button, CreateNewInvoice, SidebarLayout, InvoiceListing } from '@/components'
 import { PencilIcon } from '@heroicons/react/solid'
 
 export default function Outbox() {
     const { session, status } = useSessionGuard()
-    const { data: invoices } = trpc.useQuery(['invoice.all'])
+    const { data: invoices } = useTRPCQuery(['invoice.all'])
 
     if (status === 'loading' || !session || !invoices) return <div>Loading ...</div>
 

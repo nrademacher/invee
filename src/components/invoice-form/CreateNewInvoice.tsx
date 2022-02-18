@@ -1,5 +1,5 @@
 import { useParam } from '@/hooks'
-import { trpc } from '@/lib/trpc'
+import { useTRPCContext, useTRPCMutation } from '@/lib/trpc'
 import { createInvoiceSchema } from '@/server/routers/invoice/invoice-inputs'
 import type { FieldValues } from 'react-hook-form'
 import { InvoiceForm } from './InvoiceForm'
@@ -7,8 +7,8 @@ import { InvoiceForm } from './InvoiceForm'
 export const CreateNewInvoice: React.FC<{ modalTrigger: React.ReactElement }> = ({ modalTrigger }) => {
     const { pushParam, href, isOn, clearParam } = useParam('new', 'invoice')
 
-    const { invalidateQueries } = trpc.useContext()
-    const createInvoice = trpc.useMutation(['invoice.create'], {
+    const { invalidateQueries } = useTRPCContext()
+    const createInvoice = useTRPCMutation(['invoice.create'], {
         async onSuccess() {
             clearParam()
             await invalidateQueries(['invoice.all'])
