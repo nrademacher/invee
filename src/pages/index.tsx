@@ -9,8 +9,7 @@ export default function Index() {
 
     return (
         <div className="grid h-full grid-rows-sandwich divide-y divide-neutral-200 bg-white">
-            <header className="flex w-full items-center justify-between bg-white p-6 text-xs font-medium text-neutral-700 md:container md:mx-auto md:text-sm">
-                <h1 className="hidden font-heading text-3xl">invee</h1>
+            <header className="flex w-full items-center justify-end bg-white p-6 text-xs font-medium text-neutral-700 md:container md:mx-auto md:text-sm">
                 {session ? (
                     <>
                         <span className="text-sm font-medium md:text-base">

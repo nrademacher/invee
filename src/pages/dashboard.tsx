@@ -1,12 +1,12 @@
 import { useSessionGuard } from '@/hooks'
-import { trpc } from '@/lib/trpc'
+import { useTRPCQuery } from '@/lib/trpc'
 import { useMemo } from 'react'
 import { Button, CreateNewInvoice, SidebarLayout, InvoiceStatusChart, RevenueChart } from '@/components'
 import { PencilIcon } from '@heroicons/react/solid'
 
 export default function Dashboard() {
     const { session, status } = useSessionGuard()
-    const { data } = trpc.useQuery(['invoice.all'])
+    const { data } = useTRPCQuery(['invoice.all'])
 
     const invoices = useMemo(() => {
         if (!data) return []

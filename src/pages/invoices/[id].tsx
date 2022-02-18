@@ -1,7 +1,7 @@
 import { useSessionGuard } from '@/hooks'
-import { formatPaymentTerms } from '@/lib'
-import { trpc } from '@/lib/trpc'
+import { useTRPCContext, useTRPCQuery, useTRPCMutation } from '@/lib/trpc'
 import { useRouter } from 'next/router'
+import { formatPaymentTerms } from '@/lib'
 import NextError from 'next/error'
 import { Button, RefLink, SidebarLayout } from '@/components'
 import { ArrowLeftIcon, CheckCircleIcon, ExclamationCircleIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid'
@@ -9,16 +9,16 @@ import { EditInvoiceDraft } from '@/components/invoice-form'
 
 export default function InvoicePage() {
     const { session, status, query } = useSessionGuard()
-    const invoiceQuery = trpc.useQuery(['invoice.byId', { id: Number(query.id) }])
-    const { invalidateQueries } = trpc.useContext()
+    const invoiceQuery = useTRPCQuery(['invoice.byId', { id: Number(query.id) }])
+    const { invalidateQueries } = useTRPCContext()
     const { push } = useRouter()
-    const deleteInvoice = trpc.useMutation(['invoice.delete'], {
+    const deleteInvoice = useTRPCMutation(['invoice.delete'], {
         async onSuccess() {
             await invalidateQueries(['invoice.all'])
             push('/outbox')
         },
     })
-    const editInvoice = trpc.useMutation(['invoice.edit'], {
+    const editInvoice = useTRPCMutation(['invoice.edit'], {
         async onSuccess() {
             await invoiceQuery.refetch()
         },
