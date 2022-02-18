@@ -85,7 +85,9 @@ export default function Dashboard() {
                         />
                     </header>
                     <div className="space-y-8 divide-y divide-neutral-200 py-6">
-                        <InvoiceStatusChart data={invoicesChartData} invoiceTotal={invoices.length} />
+                        {invoices.length ? (
+                            <InvoiceStatusChart data={invoicesChartData} invoiceTotal={invoices.length} />
+                        ) : null}
                         <RevenueChart
                             expectedRevenueData={expectedRevenueChartData}
                             receivedRevenueData={receivedRevenueChartData}

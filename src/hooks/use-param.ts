@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router'
-import { promisify } from 'util'
 import { useMemo } from 'react'
 
 export function useParam(key: string, value: string) {
     const router = useRouter()
 
-    const pushParam = promisify<void>(() => {
+    const pushParam = async () => {
         router.push(
             {
                 pathname: router.pathname,
@@ -17,7 +16,7 @@ export function useParam(key: string, value: string) {
             undefined,
             { shallow: true }
         )
-    })
+    }
 
     const clearParam = () => {
         // workaround to avoid usage of delete operator

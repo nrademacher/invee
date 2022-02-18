@@ -6,6 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { createUserSchema } from '@/server/routers/user/user-inputs'
 import { useTRPCContext, useTRPCMutation } from '@/lib/trpc'
 
+const PrereleaseDisclaimer: React.FC = () => (
+    <article className="rounded-sm border border-yellow-400 bg-yellow-200 p-4 text-yellow-600">
+        <h3 className="mb-2 font-bold">Disclaimer:</h3>
+        <p className="text-sm">
+            This is a preview version of invee, not the final product. Things may change fundamentally without notice,
+            and any data stored may be permanently lost. By signing up, you are acknowledging these conditions.
+        </p>
+    </article>
+)
+
 export default function SignUp() {
     const { status } = useSession()
     const router = useRouter()
@@ -38,7 +48,7 @@ export default function SignUp() {
             <div>
                 <h2 className="mb-6 text-center text-3xl font-bold">Sign Up</h2>
                 <form
-                    className="flex w-[20rem] flex-col space-y-8 rounded border p-4"
+                    className="mx-auto flex w-full flex-col space-y-8 rounded border p-4 md:w-1/4"
                     onSubmit={handleSubmit(async data => {
                         setPassword(data.password)
                         await createUser.mutateAsync({
@@ -48,6 +58,7 @@ export default function SignUp() {
                         })
                     })}
                 >
+                    <PrereleaseDisclaimer />
                     <div className="space-y-4">
                         <div className="flex flex-col">
                             <label className="mb-1 text-sm" htmlFor="name">

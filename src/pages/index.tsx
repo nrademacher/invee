@@ -9,10 +9,10 @@ export default function Index() {
 
     return (
         <div className="grid h-full grid-rows-sandwich divide-y divide-neutral-200 bg-white">
-            <header className="flex w-full items-center justify-end bg-white p-6 text-xs font-medium text-neutral-700 md:container md:mx-auto md:text-sm">
+            <header className="flex w-full flex-row-reverse items-center justify-between bg-white p-6 text-xs font-medium text-neutral-700 md:container md:mx-auto md:text-sm xl:px-24">
                 {session ? (
                     <>
-                        <span className="text-sm font-medium md:text-base">
+                        <span className="font-medium md:text-lg">
                             Welcome, <span className="font-semibold">{session.user.name}</span>
                         </span>
                         <span className="space-x-3 divide-x divide-neutral-300 md:space-x-4">
