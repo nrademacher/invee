@@ -31,7 +31,8 @@ export default function InvoicePage() {
         return <div className="mx-auto h-full w-full">Loading...</div>
     }
 
-    const { data: invoice } = invoiceQuery
+    const { data: invoice, isFetching, isRefetching } = invoiceQuery
+    const { isLoading } = editInvoice
 
     if (status === 'loading' || !session || !invoice) return <div className="mx-auto h-full w-full">Loading ...</div>
 
@@ -60,6 +61,7 @@ export default function InvoicePage() {
                                     }
                                     icon={<ExclamationCircleIcon />}
                                     danger
+                                    disabled={isLoading || isFetching || isRefetching}
                                 >
                                     Remove Draft status
                                 </Button>
@@ -78,6 +80,7 @@ export default function InvoicePage() {
                                         invoice.status === 'PENDING' ? <CheckCircleIcon /> : <ExclamationCircleIcon />
                                     }
                                     primary
+                                    disabled={isLoading || isFetching || isRefetching}
                                 >
                                     {invoice.status === 'PAID' ? 'Mark as Pending' : 'Mark as Paid'}
                                 </Button>
@@ -168,7 +171,11 @@ export default function InvoicePage() {
                             <EditInvoiceDraft
                                 invoiceDraft={invoice}
                                 modalTrigger={
-                                    <Button primary icon={<PencilIcon />}>
+                                    <Button
+                                        disabled={isFetching || isRefetching || isLoading}
+                                        primary
+                                        icon={<PencilIcon />}
+                                    >
                                         Edit Draft
                                     </Button>
                                 }
