@@ -41,7 +41,7 @@
   "dependencies": {
     "@fontsource/open-sans": "^4.5.5",
     "@fontsource/pt-sans": "^4.5.1",
-    "@fontsource/pt-sans-caption": "^4.5.1",
+    "@fontsource/pt-sans-caption": "^4.5.2",
     "@fontsource/pt-sans-narrow": "^4.5.1",
     "@heroicons/react": "^1.0.5",
     "@hookform/resolvers": "^2.8.8",
