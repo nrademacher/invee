@@ -415,10 +415,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource/pt-sans-narrow/-/pt-sans-narrow-4.5.1.tgz#6744cda0fac8dee5f6515d2a2c8687b2967c519b"
   integrity sha512-BZERZIHrzLjMOioaqGrAXWuIpzsaT2HzxVZ+kqJj7JKTXLryF4mbD762UejFN8R3nADBFM8RQQMHZqJS+/yX+Q==
 
-"@fontsource/pt-sans@^4.5.1":
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/@fontsource/pt-sans/-/pt-sans-4.5.1.tgz#1289021dd3d78647f659503d4522aeb7a971d6bc"
-  integrity sha512-mDts0m+hPAtApPTklZyu+9L4JQhv9uQSKRknArFgeirRyijDFeorsfHH/+7hI+b9yGiAVkvzOBlj2oZD+MAp+A==
+"@fontsource/pt-sans@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@fontsource/pt-sans/-/pt-sans-4.5.2.tgz#0544c27105348e8cb33f18747d923583be6449be"
+  integrity sha512-dEORNBWcONmKoG/hpf9tPz98qDPBqm12gV8ZNbt8dVqxHrmr5Ws8XJn5Gte2PJ4mSSiANACji1TqfmXTgWisIA==
 
 "@fullhuman/postcss-purgecss@^2.1.2":
   version "2.3.0"
