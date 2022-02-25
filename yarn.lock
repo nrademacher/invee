@@ -405,10 +405,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource/open-sans/-/open-sans-4.5.5.tgz#f42ede921cc807cf7b96896691348d75dafbf70c"
   integrity sha512-h1oUPSQpoMnDrnzIZTVS9PPBFhWXS87v6/cd9FY2Xc+GKbOVcjPZxcvUDU1TnCie2QSoYY9aifERRV/d8JHtWQ==
 
-"@fontsource/pt-sans-caption@^4.5.1":
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/@fontsource/pt-sans-caption/-/pt-sans-caption-4.5.1.tgz#fd7d49d5aaae8b2e04f76fc85919f98d7a076432"
-  integrity sha512-ZPo7n72x5WzWpaJ8xDn+BqQRFv8v1YY0V57H3oLrnR2pRRT8GBK9GHE4P/poMvvIiuj5ml+KEbv8+VVgYSFUKw==
+"@fontsource/pt-sans-caption@^4.5.2":
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/@fontsource/pt-sans-caption/-/pt-sans-caption-4.5.2.tgz#7bc8da5e8305194104083649cf91e6a4382b3da2"
+  integrity sha512-4e6hsVwcrPLOs6m4LVJADxz4OXnnLs/YDjcP+7KPvkKIFubEQLGq6xLNBDFiKzL9wevIkMNRi2ZbEcz/MSLieg==
 
 "@fontsource/pt-sans-narrow@^4.5.1":
   version "4.5.1"
