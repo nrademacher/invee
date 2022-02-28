@@ -61,7 +61,7 @@ export default function InvoicePage() {
                                     }
                                     icon={<ExclamationCircleIcon />}
                                     danger
-                                    disabled={isLoading || isFetching || isRefetching}
+                                    disabled={isLoading || isFetching}
                                 >
                                     Remove Draft status
                                 </Button>
@@ -80,7 +80,7 @@ export default function InvoicePage() {
                                         invoice.status === 'PENDING' ? <CheckCircleIcon /> : <ExclamationCircleIcon />
                                     }
                                     primary
-                                    disabled={isLoading || isFetching || isRefetching}
+                                    disabled={isLoading || isFetching}
                                 >
                                     {invoice.status === 'PAID' ? 'Mark as Pending' : 'Mark as Paid'}
                                 </Button>
@@ -171,11 +171,7 @@ export default function InvoicePage() {
                             <EditInvoiceDraft
                                 invoiceDraft={invoice}
                                 modalTrigger={
-                                    <Button
-                                        disabled={isFetching || isRefetching || isLoading}
-                                        primary
-                                        icon={<PencilIcon />}
-                                    >
+                                    <Button disabled={isFetching || isLoading} primary icon={<PencilIcon />}>
                                         Edit Draft
                                     </Button>
                                 }

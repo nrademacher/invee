@@ -4,7 +4,7 @@
   "author": "Nikolay Rademacher",
   "private": true,
   "scripts": {
-    "build:1-migrate": "prisma migrate deploy",
+    "build:1-migrate": "DATABASE_URL=\"$MIGRATE_DATABASE_URL\" prisma migrate deploy",
     "build:2-build": "next build",
     "build": "run-s build:*",
     "db-up": "docker-compose up -d",
